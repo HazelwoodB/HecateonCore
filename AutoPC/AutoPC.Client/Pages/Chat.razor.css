@@ -1,0 +1,478 @@
+.cp-chat-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 6rem);
+    max-width: 950px;
+    margin: 0 auto;
+    border: 1px solid #1a1a3e;
+    border-radius: 2px;
+    overflow: hidden;
+    background: #0a0a0f;
+    position: relative;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.05), inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Decorative corner accents */
+.cp-chat-container::before,
+.cp-chat-container::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: #00f0ff;
+    border-style: solid;
+    z-index: 2;
+}
+.cp-chat-container::before {
+    top: 0; left: 0;
+    border-width: 2px 0 0 2px;
+}
+.cp-chat-container::after {
+    bottom: 0; right: 0;
+    border-width: 0 2px 2px 0;
+}
+
+.cp-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1.25rem;
+    background: #0d0d1a;
+    border-bottom: 1px solid #1a1a3e;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.header-icon {
+    color: #00f0ff;
+    font-size: 1.3rem;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+}
+
+.cp-chat-header h3 {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: #e8f0fe;
+}
+
+.header-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: #ff2d7b;
+    border: 1px solid #ff2d7b44;
+    padding: 0.1rem 0.4rem;
+    border-radius: 2px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.cp-btn-ghost {
+    background: transparent;
+    border: 1px solid #1a1a3e;
+    color: #5a6988;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.cp-btn-ghost:hover {
+    border-color: #00f0ff;
+    color: #00f0ff;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+}
+
+.cp-btn-ghost.danger:hover {
+    border-color: #ff2d7b;
+    color: #ff2d7b;
+    box-shadow: 0 0 8px rgba(255, 45, 123, 0.2);
+}
+
+.scan-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00f0ff33, #ff2d7b33, transparent);
+    animation: scan 3s linear infinite;
+}
+
+@keyframes scan {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+
+.cp-chat-window {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 240, 255, 0.008) 2px,
+            rgba(0, 240, 255, 0.008) 4px
+        );
+}
+
+.cp-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 1rem;
+    color: #5a6988;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+}
+
+.loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #1a1a3e;
+    border-top: 2px solid #00f0ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+.cp-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #5a6988;
+}
+
+.empty-glyph {
+    font-size: 3rem;
+    color: #1a1a3e;
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+    margin-bottom: 1rem;
+}
+
+.empty-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    color: #5a6988;
+    margin: 0;
+}
+
+.empty-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: #3a4560;
+    margin-top: 0.5rem;
+}
+
+/* Messages */
+.cp-message {
+    max-width: 82%;
+    padding: 0.65rem 0.9rem;
+    border-radius: 2px;
+    word-wrap: break-word;
+    position: relative;
+}
+
+.cp-msg-user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #161633, #1a1a3e);
+    border: 1px solid #00f0ff33;
+    border-left: 3px solid #00f0ff;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.05);
+}
+
+.cp-msg-assistant {
+    align-self: flex-start;
+    background: linear-gradient(135deg, #111126, #161633);
+    border: 1px solid #ff2d7b22;
+    border-left: 3px solid #ff2d7b;
+    box-shadow: 0 0 10px rgba(255, 45, 123, 0.05);
+}
+
+.msg-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+}
+
+.msg-role {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.cp-msg-user .msg-role { color: #00f0ff; }
+.cp-msg-assistant .msg-role { color: #ff2d7b; }
+
+.msg-time {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: #3a4560;
+}
+
+.msg-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: #39ff14;
+    animation: pulse-status 1s ease-in-out infinite;
+}
+
+@keyframes pulse-status {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.msg-body {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #c8d6e5;
+    white-space: pre-wrap;
+}
+
+.msg-sentiment {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    margin-top: 0.4rem;
+    letter-spacing: 0.05em;
+}
+
+.sent-pos { color: #39ff14; }
+.sent-neg { color: #ff2d7b; }
+
+.cursor-blink {
+    color: #00f0ff;
+    animation: blink 0.6s step-end infinite;
+    text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* Input Area */
+.cp-input-area {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    border-top: 1px solid #1a1a3e;
+    background: #0d0d1a;
+}
+
+.input-prefix {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    color: #00f0ff;
+    text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
+    user-select: none;
+}
+
+.cp-input {
+    flex: 1;
+    background: #0a0a0f;
+    border: 1px solid #1a1a3e;
+    color: #c8d6e5;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    resize: none;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.cp-input::placeholder {
+    color: #3a4560;
+}
+
+.cp-input:focus {
+    border-color: #00f0ff;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.15), inset 0 0 8px rgba(0, 240, 255, 0.03);
+}
+
+.cp-send-btn {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #00f0ff44;
+    background: #111126;
+    color: #00f0ff;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    clip-path: polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%);
+}
+
+.cp-send-btn:hover:not(:disabled) {
+    background: #00f0ff;
+    color: #0a0a0f;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+.cp-send-btn:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+}
+
+.send-icon.spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Response Rating System */
+.cp-rating-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cp-rating-buttons {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-start;
+}
+
+.cp-rating-btn {
+    background: rgba(255, 45, 123, 0.08);
+    border: 1px solid #ff2d7b44;
+    color: #ff2d7b;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    padding: 6px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    min-width: 50px;
+}
+
+.cp-rating-btn:hover {
+    background: rgba(255, 45, 123, 0.15);
+    border-color: #ff2d7b;
+    box-shadow: 0 0 8px rgba(255, 45, 123, 0.2);
+    transform: translateY(-1px);
+}
+
+.cp-rating-btn:active {
+    transform: translateY(0);
+    opacity: 0.8;
+}
+
+.cp-rating-btn:focus {
+    outline: none;
+    box-shadow: 0 0 12px rgba(255, 45, 123, 0.3);
+}
+
+.cp-rating-star .star-emoji {
+    font-size: 1em;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.cp-rating-btn:hover .star-emoji {
+    transform: scale(1.2);
+}
+
+/* Star Rating Specific Styling */
+.cp-rating-btn[data-rating="1"] {
+    background: rgba(255, 100, 100, 0.08);
+    border-color: #ff6464;
+}
+
+.cp-rating-btn[data-rating="1"]:hover {
+    background: rgba(255, 100, 100, 0.15);
+    border-color: #ff6464;
+    box-shadow: 0 0 8px rgba(255, 100, 100, 0.2);
+}
+
+.cp-rating-btn[data-rating="2"] {
+    background: rgba(255, 150, 100, 0.08);
+    border-color: #ff9664;
+}
+
+.cp-rating-btn[data-rating="2"]:hover {
+    background: rgba(255, 150, 100, 0.15);
+    border-color: #ff9664;
+    box-shadow: 0 0 8px rgba(255, 150, 100, 0.2);
+}
+
+.cp-rating-btn[data-rating="3"] {
+    background: rgba(255, 180, 100, 0.08);
+    border-color: #ffb464;
+}
+
+.cp-rating-btn[data-rating="3"]:hover {
+    background: rgba(255, 180, 100, 0.15);
+    border-color: #ffb464;
+    box-shadow: 0 0 8px rgba(255, 180, 100, 0.2);
+}
+
+.cp-rating-btn[data-rating="4"] {
+    background: rgba(100, 255, 100, 0.08);
+    border-color: #64ff64;
+}
+
+.cp-rating-btn[data-rating="4"]:hover {
+    background: rgba(100, 255, 100, 0.15);
+    border-color: #64ff64;
+    box-shadow: 0 0 8px rgba(100, 255, 100, 0.2);
+}
+
+.cp-rating-btn[data-rating="5"] {
+    background: rgba(100, 200, 255, 0.08);
+    border-color: #64c8ff;
+}
+
+.cp-rating-btn[data-rating="5"]:hover {
+    background: rgba(100, 200, 255, 0.15);
+    border-color: #64c8ff;
+    box-shadow: 0 0 8px rgba(100, 200, 255, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cp-rating-buttons {
+        gap: 3px;
+    }
+    
+    .cp-rating-btn {
+        min-width: 40px;
+        padding: 4px 8px;
+        font-size: 0.65rem;
+    }
+}

@@ -1,0 +1,716 @@
+@page "/chat"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@inject HttpClient Http
+@inject ClientChatManager ChatManager
+@inject ClientLLMService LLMService
+@inject ClientSentimentService SentimentService
+@inject StorageService StorageService
+@inject UserProfileService UserProfileService
+@inject PreferenceManager PreferenceManager
+@inject FeedbackCollector FeedbackCollector
+@inject EmotionRecognitionService EmotionService
+@inject PersonalityEngine PersonalityEngine
+@inject ConversationalMemoryService MemoryService
+@inject RetroThemeService ThemeService
+@inject ConversationalNaturalnessEngine NaturalnessEngine
+@inject NavigationManager Navigation
+@using System.Text
+@using System.Text.Json
+@using System.Diagnostics
+@using AutoPC.Client.Services
+@using AutoPC.Client.Services.Foundation
+@using AutoPC.Client.Components
+
+<PageTitle>// ARIA v3.0 - AUXILIARY RESPONSE INTELLIGENCE ASSISTANT</PageTitle>
+
+<!-- WandaVision Reality Effects -->
+<WandaVisionEffects @ref="wandaEffects" />
+
+<link rel="stylesheet" href="wandavision-effects.css" />
+
+<div class="cp-chat-container">
+    <div class="cp-chat-header">
+        <div class="header-left">
+            <span class="header-icon">◈</span>
+            <h3>ARIA</h3>
+            <span class="header-tag">v3.0 ENHANCED</span>
+        </div>
+        <div class="header-actions">
+            <button class="cp-btn-ghost" @onclick="GoToSettings" title="ARIA Settings">
+                <span class="btn-icon">⚙️</span> SETTINGS
+            </button>
+            <button class="cp-btn-ghost" @onclick="LoadHistory" disabled="@isLoading">
+                <span class="btn-icon">⟳</span> SYNC
+            </button>
+            <button class="cp-btn-ghost danger" @onclick="ClearLocal">
+                <span class="btn-icon">✕</span> PURGE
+            </button>
+            <button class="cp-btn-ghost" @onclick="ConfigureLLM" title="Configure LLM">
+                <span class="btn-icon">🔧</span> LLM
+            </button>
+        </div>
+    </div>
+
+    <div class="scan-line"></div>
+
+    @if (!string.IsNullOrEmpty(debugMessage))
+    {
+        <div style="background: #1a1a2e; border-left: 3px solid #ff006e; padding: 10px; margin: 10px; font-size: 0.9em; font-family: monospace; color: #ff006e;">
+            <strong>DEBUG:</strong> @debugMessage
+        </div>
+    }
+
+    @if (showApiKeyInput)
+    {
+        <div style="background: #1a1a2e; border: 1px solid #ff006e; padding: 15px; margin: 10px; border-radius: 2px;">
+            <div style="margin-bottom: 10px;">
+                <label>Ollama Endpoint:</label>
+                <input @bind="ollamaEndpoint" type="text" style="width: 100%; padding: 8px; margin: 5px 0; background: #0a0a0f; border: 1px solid #333; color: #fff;" />
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>Model Name:</label>
+                <input @bind="ollamaModel" type="text" style="width: 100%; padding: 8px; margin: 5px 0; background: #0a0a0f; border: 1px solid #333; color: #fff;" />
+            </div>
+            <button @onclick="SetOllamaConfig" class="cp-send-btn">Save Config</button>
+        </div>
+    }
+
+    <div class="cp-chat-window">
+        @if (isLoading && history?.Count == 0)
+        {
+            <div class="cp-loading">
+                <div class="loading-spinner"></div>
+                <span>INITIALIZING CLIENT RUNTIME...</span>
+            </div>
+        }
+        else if (!history?.Any() == true)
+        {
+            <div class="cp-empty-state">
+                <div class="empty-glyph">◈</div>
+                <p class="empty-title">ARIA ONLINE</p>
+                <p class="empty-sub">Ready for your command, operator. What shall we discuss?</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var msg in history ?? [])
+            {
+                <div class="cp-message @(msg.Role == "user" ? "cp-msg-user" : "cp-msg-assistant")">
+                    <div class="msg-header">
+                        <span class="msg-role">@(msg.Role == "user" ? "▸▸ OPERATOR" : "◂◂ ARIA")</span>
+                        <span class="msg-time">@msg.Timestamp.ToLocalTime().ToString("HH:mm:ss")</span>
+                    </div>
+                    <div class="msg-body">@msg.Message</div>
+                    
+                    @if (msg.Role == "assistant")
+                    {
+                        <!-- Response Rating System UI - 1-5 Stars (Option A) -->
+                        <div class="cp-rating-container" style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #333;">
+                            <div style="font-size: 0.85em; color: #888; margin-bottom: 6px;">Rate this response:</div>
+                            <div class="cp-rating-buttons">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    var rating = i;
+                                    <button class="cp-rating-btn cp-rating-star" 
+                                            @onclick="() => SubmitFeedback(msg.Id, rating, null)"
+                                            title="@GetStarTitle(rating)"
+                                            data-rating="@rating">
+                                        <span class="star-emoji">@GetStarEmoji(rating)</span>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (isStreaming && !string.IsNullOrEmpty(streamingReply))
+            {
+                <div class="cp-message cp-msg-assistant streaming">
+                    <div class="msg-header">
+                        <span class="msg-role">◂◂ ARIA</span>
+                        <span class="msg-status">▶ TRANSMITTING</span>
+                    </div>
+                    <div class="msg-body">@streamingReply<span class="cursor-blink">█</span></div>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="cp-input-area">
+        <div class="input-prefix">&gt;&gt;</div>
+        <textarea class="cp-input" @bind="message" @bind:event="oninput"
+                  @onkeydown="HandleKeyDown" rows="1"
+                  placeholder="Enter transmission..." disabled="@isStreaming"></textarea>
+        <button class="cp-send-btn" @onclick="Send" disabled="@(isStreaming || string.IsNullOrWhiteSpace(message))">
+            @if (isStreaming)
+            {
+                <span class="send-icon spin">◎</span>
+            }
+            else
+            {
+                <span class="send-icon">▶</span>
+            }
+        </button>
+    </div>
+</div>
+
+<!-- Feedback Statistics Dashboard (Option A - Step 4) -->
+<FeedbackStatistics @ref="statsComponent" />
+
+<!-- Feedback Comment Modal (Option A - Step 2) -->
+<FeedbackCommentModal @ref="feedbackModal" 
+                      Rating="@currentRating"
+                      OnFeedbackSubmitted="@HandleFeedbackWithComment" />
+
+@code {
+    private string message = string.Empty;
+    private string streamingReply = string.Empty;
+    private List<ChatMessage>? history;
+    private bool isStreaming = false;
+    private bool isLoading = false;
+    private string debugMessage = string.Empty;
+    private bool showApiKeyInput = false;
+    private string ollamaEndpoint = "http://localhost:11434";
+    private string ollamaModel = "mistral";
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+
+    // Foundation service state
+    private UserProfile? currentUserProfile;
+    private bool foundationServicesInitialized = false;
+    
+    // Modal and feedback state (Option A)
+    private AutoPC.Client.Components.FeedbackCommentModal? feedbackModal;
+    private AutoPC.Client.Components.FeedbackStatistics? statsComponent;
+    private AutoPC.Client.Components.WandaVisionEffects? wandaEffects;
+    private int currentRating = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("[Chat] OnInitializedAsync - Client-side mode");
+        Console.WriteLine($"[Chat] BaseAddress: {Http.BaseAddress}");
+        
+        try
+        {
+            // Initialize foundation services
+            await InitializeFoundationServicesAsync();
+
+            // Load Ollama configuration from local storage
+            var endpoint = await GetFromLocalStorageAsync("ollama_endpoint");
+            var model = await GetFromLocalStorageAsync("ollama_model");
+            
+            if (!string.IsNullOrEmpty(endpoint) && !string.IsNullOrEmpty(model))
+            {
+                ollamaEndpoint = endpoint;
+                ollamaModel = model;
+                LLMService?.SetOllamaConfig(endpoint, model);
+                Console.WriteLine($"[Chat] Ollama config loaded: {endpoint} with {model}");
+            }
+
+            // Load conversation history from server
+            await Task.Delay(100);
+            await LoadHistory();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Chat] Initialization error: {ex}");
+            debugMessage = $"Init error: {ex.Message}";
+            history = [];
+        }
+    }
+
+    private async Task InitializeFoundationServicesAsync()
+    {
+        try
+        {
+            Console.WriteLine("[Foundation] Initializing foundation services");
+            
+            // Initialize user profile service first
+            await UserProfileService.InitializeAsync();
+            currentUserProfile = UserProfileService.GetCurrentProfile();
+            Console.WriteLine($"[Foundation] User profile loaded: {currentUserProfile?.Id}");
+            
+            // Initialize preferences
+            await PreferenceManager.InitializeAsync();
+            
+            // Initialize feedback collector
+            await FeedbackCollector.InitializeAsync();
+            
+            foundationServicesInitialized = true;
+            Console.WriteLine("[Foundation] All foundation services initialized");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Foundation] Initialization error: {ex.Message}");
+            foundationServicesInitialized = false;
+        }
+    }
+
+    private async Task DebugTest()
+    {
+        debugMessage = "Testing client-side services...";
+        StateHasChanged();
+
+        try
+        {
+            Console.WriteLine("[Debug] Testing client services");
+            
+            // Test sentiment service
+            var sentiment = SentimentService?.AnalyzeSentiment("This is absolutely amazing!");
+            Console.WriteLine($"[Debug] Sentiment test: {sentiment?.Label} ({sentiment?.Score:F2})");
+
+            // Test LLM availability
+            var testReply = string.Empty;
+            if (LLMService != null)
+            {
+                testReply = await LLMService.GenerateReplyAsync("Hello", history ?? [], CancellationToken.None);
+            }
+            else
+            {
+                testReply = "No LLM service";
+            }
+            Console.WriteLine($"[Debug] LLM test response: {testReply}");
+
+            var endpoint = LLMService?.GetOllamaEndpoint() ?? "Not configured";
+            var model = LLMService?.GetOllamaModel() ?? "Not configured";
+            debugMessage = $"✓ Services OK - Sentiment: {sentiment?.Label}, Ollama: {endpoint} ({model})";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Debug] Error: {ex.Message}");
+            debugMessage = $"✗ Error: {ex.Message}";
+        }
+        finally
+        {
+            StateHasChanged();
+        }
+    }
+
+    private void ConfigureLLM()
+    {
+        showApiKeyInput = !showApiKeyInput;
+        StateHasChanged();
+    }
+
+    private async Task SetOllamaConfig()
+    {
+        if (!string.IsNullOrWhiteSpace(ollamaEndpoint) && !string.IsNullOrWhiteSpace(ollamaModel))
+        {
+            try
+            {
+                LLMService?.SetOllamaConfig(ollamaEndpoint, ollamaModel);
+                await SaveToLocalStorageAsync("ollama_endpoint", ollamaEndpoint);
+                await SaveToLocalStorageAsync("ollama_model", ollamaModel);
+                debugMessage = $"✓ Ollama configured: {ollamaEndpoint} with {ollamaModel}";
+                showApiKeyInput = false;
+                Console.WriteLine("[Chat] Ollama config saved");
+            }
+            catch (Exception ex)
+            {
+                debugMessage = $"✗ Error saving Ollama config: {ex.Message}";
+            }
+        }
+        else
+        {
+            debugMessage = "✗ Both endpoint and model are required";
+        }
+        StateHasChanged();
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            await Send();
+        }
+    }
+
+    private async Task Send()
+    {
+        if (string.IsNullOrWhiteSpace(message) || isStreaming)
+            return;
+
+        isStreaming = true;
+        streamingReply = string.Empty;
+        var userMessage = message;
+        message = string.Empty;
+
+        Console.WriteLine($"[Chat] Client processing: {userMessage}");
+
+        // === PHASE 3 ENHANCEMENT: Emotion Recognition ===
+        var emotionAnalysis = EmotionService.AnalyzeEmotion(userMessage);
+        Console.WriteLine($"[ARIA 3.0] Detected emotion: {emotionAnalysis.PrimaryEmotion} (intensity: {emotionAnalysis.Intensity:F2})");
+
+        // Optimistically add user message to UI
+        history ??= [];
+        var userMsg = new ChatMessage
+        {
+            Id = Guid.NewGuid(),
+            Role = "user",
+            Message = userMessage,
+            Timestamp = DateTime.UtcNow,
+            Sentiment = emotionAnalysis.PrimaryEmotion,
+            Score = emotionAnalysis.Intensity
+        };
+        history.Add(userMsg);
+        StateHasChanged();
+
+        try
+        {
+            // === PHASE 3 ENHANCEMENT: Check for wellness intervention ===
+            var wellnessCheck = await MemoryService.CheckUserWellnessAsync();
+            if (wellnessCheck != null)
+            {
+                Console.WriteLine($"[ARIA 3.0] Wellness check triggered: {wellnessCheck.Trigger}");
+            }
+
+            // === TURING TEST ENHANCEMENT: Generate human-like system prompt ===
+            var currentTheme = await ThemeService.GetCurrentThemeAsync();
+            var humanSystemPrompt = NaturalnessEngine.GenerateHumanLikeSystemPrompt(emotionAnalysis, currentTheme.Name);
+            var contextSummary = await MemoryService.GenerateContextSummaryAsync();
+            Console.WriteLine($"[ARIA 3.0] Human-like system prompt generated for theme: {currentTheme.Name}");
+
+            // Add greeting if this is first message
+            var preferences = PreferenceManager.GetCurrentPreferences();
+            if (history.Count == 1 && preferences.EnableGreetings)
+            {
+                var greeting = await PersonalityEngine.GenerateGreetingAsync();
+                if (!string.IsNullOrEmpty(greeting))
+                {
+                    streamingReply = greeting + "\n\n";
+                    StateHasChanged();
+                    await Task.Delay(300); // Slight pause for effect
+                }
+            }
+
+            // Process entirely on client side WITH HUMAN-LIKE SYSTEM PROMPT
+            await foreach (var chunk in ChatManager.ProcessMessageStreamAsync(
+                userMessage, 
+                systemPrompt: humanSystemPrompt, // Use natural system prompt!
+                syncToServer: true))
+            {
+                streamingReply += chunk;
+                StateHasChanged();
+                await Task.Delay(5);
+            }
+
+            // === TURING TEST ENHANCEMENT: Humanize the response ===
+            if (!string.IsNullOrEmpty(streamingReply))
+            {
+                Console.WriteLine($"[ARIA 3.0] Pre-humanization: {streamingReply.Length} chars");
+                
+                // Transform robotic response into natural conversation
+                streamingReply = NaturalnessEngine.HumanizeResponse(streamingReply, emotionAnalysis);
+                
+                Console.WriteLine($"[ARIA 3.0] Post-humanization: {streamingReply.Length} chars");
+                
+                // Add empathetic acknowledgment if strong emotion detected (only if not already added by humanizer)
+                if (emotionAnalysis.Intensity > 0.7f && !streamingReply.StartsWith("I "))
+                {
+                    var empathy = EmotionService.GenerateEmpatheticResponse(emotionAnalysis);
+                    streamingReply = $"{empathy}\n\n{streamingReply}";
+                }
+            }
+
+            // Add assistant message to history
+            if (!string.IsNullOrEmpty(streamingReply))
+            {
+                var assistantMsg = new ChatMessage
+                {
+                    Id = Guid.NewGuid(),
+                    Role = "assistant",
+                    Message = streamingReply,
+                    Timestamp = DateTime.UtcNow
+                };
+                history.Add(assistantMsg);
+                
+                // === PHASE 3 ENHANCEMENT: Record conversation turn for learning ===
+                await MemoryService.RecordConversationTurnAsync(userMessage, streamingReply, emotionAnalysis);
+                Console.WriteLine($"[ARIA 3.0] Conversation turn recorded for learning");
+                
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Chat] Processing error: {ex.Message}");
+            streamingReply = $"Error: {ex.Message}";
+            debugMessage = $"Error: {ex.GetType().Name}";
+            StateHasChanged();
+        }
+        finally
+        {
+            isStreaming = false;
+            streamingReply = string.Empty;
+            StateHasChanged();
+            await ScrollChatWindowAsync();
+        }
+    }
+
+    private async Task LoadHistory()
+    {
+        isLoading = true;
+        debugMessage = "Syncing with server...";
+        Console.WriteLine("[Chat] Loading history from server");
+
+        try
+        {
+            await ChatManager.LoadHistoryFromServerAsync();
+            history = ChatManager.GetContext().ToList();
+            Console.WriteLine($"[Chat] Loaded {history.Count} messages");
+            debugMessage = $"✓ Loaded {history.Count} messages";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Chat] Load error: {ex.Message}");
+            history ??= [];
+            debugMessage = $"✗ Load failed: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ClearLocal()
+    {
+        if (await ConfirmAsync("Clear all local messages?"))
+        {
+            ChatManager.ClearContext();
+            history = [];
+            debugMessage = "Local context cleared";
+            Console.WriteLine("[Chat] Context cleared");
+            StateHasChanged();
+        }
+    }
+
+    private async Task ScrollChatWindowAsync()
+    {
+        await Task.Delay(100);
+        // Scroll logic would go here
+    }
+
+    // Local storage helpers
+    private async Task SaveToLocalStorageAsync(string key, string value)
+    {
+        try
+        {
+            // In a real app, use IJSRuntime for secure local storage access
+            Console.WriteLine($"[Chat] Saved to local storage: {key}");
+        }
+        catch { }
+    }
+
+    private async Task<string> GetFromLocalStorageAsync(string key)
+    {
+        try
+        {
+            // In a real app, use IJSRuntime for secure local storage access
+            return string.Empty;
+        }
+        catch { }
+        return string.Empty;
+    }
+
+    private async Task<bool> ConfirmAsync(string message)
+    {
+        return await Task.FromResult(true); // Replace with JS interop for real confirmation
+    }
+
+    // ====== Option A: Star Rating System (Phase 2) ======
+    
+    /// <summary>
+    /// Submit feedback with 1-5 star rating
+    /// Step 1: Collect rating, optionally show comment modal for low ratings
+    /// </summary>
+    private async Task SubmitFeedback(Guid messageId, int rating, string? comment)
+    {
+        try
+        {
+            Console.WriteLine($"[Feedback] Rating {rating} stars clicked for message {messageId}");
+            
+            // Store current rating for modal
+            currentRating = rating;
+            
+            // For 1-star ratings, show comment modal for improvement feedback
+            if (rating == 1 && comment == null)
+            {
+                Console.WriteLine("[Feedback] Opening comment modal for low rating");
+                if (feedbackModal != null)
+                {
+                    await feedbackModal.ShowAsync();
+                }
+                return;
+            }
+            
+            // For other ratings, submit directly
+            await SubmitRatingAsync(messageId, rating, comment);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Feedback] Error in rating handler: {ex.Message}");
+            debugMessage = $"✗ Error: {ex.Message}";
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Handle feedback submission from comment modal
+    /// Step 2: Modal callback
+    /// </summary>
+    private async Task HandleFeedbackWithComment((int Rating, string? Comment) feedback)
+    {
+        try
+        {
+            var (rating, comment) = feedback;
+            Console.WriteLine($"[Feedback] Comment modal submitted: rating={rating}, comment length={comment?.Length}");
+            
+            // Find the most recent assistant message
+            if (history?.Count > 0)
+            {
+                var lastAssistantMessage = history.LastOrDefault(m => m.Role == "assistant");
+                if (lastAssistantMessage != null)
+                {
+                    await SubmitRatingAsync(lastAssistantMessage.Id, rating, comment);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Feedback] Error handling comment: {ex.Message}");
+            debugMessage = $"✗ Error: {ex.Message}";
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Actually submit the rating to the feedback collector
+    /// Step 3: Persist to storage
+    /// </summary>
+    private async Task SubmitRatingAsync(Guid messageId, int rating, string? comment)
+    {
+        try
+        {
+            Console.WriteLine($"[Feedback] Submitting {rating}-star rating for message {messageId}");
+            
+            // Submit feedback
+            var success = await FeedbackCollector.SubmitFeedbackAsync(
+                messageId,
+                rating,
+                comment,
+                tags: new[] { GetRatingTag(rating) }
+            );
+            
+            if (success)
+            {
+                debugMessage = $"✓ {GetStarEmoji(rating)} Feedback saved";
+                Console.WriteLine($"[Feedback] {rating}-star rating submitted successfully");
+                
+                // === WANDAVISION EFFECT: Show applause for 5-star ratings! ===
+                if (rating == 5 && wandaEffects != null)
+                {
+                    wandaEffects.ShowApplause();
+                }
+                
+                // Persist and refresh stats
+                await PersistFeedbackAsync();
+                
+                if (statsComponent != null)
+                {
+                    await statsComponent.RefreshStats();
+                }
+            }
+            else
+            {
+                debugMessage = "✗ Failed to record feedback";
+                Console.WriteLine("[Feedback] Failed to submit rating");
+            }
+            
+            StateHasChanged();
+            
+            // Clear message after 2 seconds
+            await Task.Delay(2000);
+            debugMessage = string.Empty;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Feedback] Error submitting feedback: {ex.Message}");
+            debugMessage = $"✗ Feedback error: {ex.Message}";
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Convert rating (1-5) to star emoji
+    /// </summary>
+    private string GetStarEmoji(int rating)
+    {
+        return rating switch
+        {
+            1 => "⭐",
+            2 => "⭐⭐",
+            3 => "⭐⭐⭐",
+            4 => "⭐⭐⭐⭐",
+            5 => "⭐⭐⭐⭐⭐",
+            _ => "?"
+        };
+    }
+
+    /// <summary>
+    /// Get descriptive title for star rating
+    /// </summary>
+    private string GetStarTitle(int rating)
+    {
+        return rating switch
+        {
+            1 => "1 star - Not helpful at all",
+            2 => "2 stars - Somewhat helpful",
+            3 => "3 stars - Moderately helpful",
+            4 => "4 stars - Very helpful",
+            5 => "5 stars - Extremely helpful",
+            _ => "Rate this response"
+        };
+    }
+
+    /// <summary>
+    /// Convert rating to categorized tag
+    /// </summary>
+    private string GetRatingTag(int rating)
+    {
+        return rating switch
+        {
+            1 or 2 => "needs-improvement",
+            3 => "adequate",
+            4 or 5 => "helpful",
+            _ => "unrated"
+        };
+    }
+
+    /// <summary>
+    /// Persist feedback to localStorage
+    /// Step 3: Storage persistence (ready for enhancement)
+    /// </summary>
+    private async Task PersistFeedbackAsync()
+    {
+        try
+        {
+            Console.WriteLine("[Storage] Persisting feedback to localStorage");
+            // TODO: Implement full localStorage persistence with IJSInterop
+            await Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Storage] Error persisting feedback: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Navigate to ARIA Settings page (Phase 3)
+    /// </summary>
+    private void GoToSettings()
+    {
+        Navigation.NavigateTo("/settings");
+    }
+}

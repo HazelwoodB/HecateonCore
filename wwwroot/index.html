@@ -1,0 +1,9 @@
+<script>window.addEventListener('unhandledrejection', function(event) {
+        // Suppress the push permission error from third-party scripts
+        if (event.reason &&
+            event.reason.message &&
+            event.reason.message.includes("Push Permission without userVisibleOnly")) {
+            console.warn('Suppressed known third-party permission error:', event.reason.message);
+            event.preventDefault();
+        }
+    });</script>
