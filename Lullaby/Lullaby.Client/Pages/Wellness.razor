@@ -1,0 +1,296 @@
+@page "/wellness"
+@using Lullaby.Client
+@rendermode InteractiveWebAssembly
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<PageTitle>Wellness Dashboard</PageTitle>
+
+<div class="wellness-container">
+    <h2>🌟 Wellness Dashboard</h2>
+
+    @if (_loading)
+    {
+        <div class="loading-state">
+            <p>Loading your wellness data...</p>
+        </div>
+    }
+    else if (_trendScore is not null)
+    {
+        <!-- Risk Level Banner -->
+        <div class="risk-banner risk-@_trendScore.OverallRiskLevel.ToString().ToLowerInvariant()">
+            <h3>@GetRiskLevelIcon(_trendScore.OverallRiskLevel) @_trendScore.OverallRiskLevel Status</h3>
+            <p>@_trendScore.RiskExplanation</p>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">😴</div>
+                <h4>Sleep Quality</h4>
+                <div class="metric-score">@(_trendScore.SleepScore * 100):F0%</div>
+                <p class="metric-explanation">@_trendScore.SleepExplanation</p>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">💚</div>
+                <h4>Mood Stability</h4>
+                <div class="metric-score">@(_trendScore.MoodScore * 100):F0%</div>
+                <p class="metric-explanation">@_trendScore.MoodExplanation</p>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">✅</div>
+                <h4>Routine Adherence</h4>
+                <div class="metric-score">@(_trendScore.RoutineScore * 100):F0%</div>
+                <p class="metric-explanation">@_trendScore.RoutineExplanation</p>
+            </div>
+        </div>
+
+        <!-- Intervention Ladder -->
+        @if (_trendScore.OverallRiskLevel >= RiskLevel.Elevated)
+        {
+            <div class="intervention-section">
+                <h3>🛟 Recommended Actions</h3>
+                <div class="intervention-ladder">
+                    @foreach (var intervention in GetInterventions(_trendScore.OverallRiskLevel))
+                    {
+                        <div class="intervention-item">
+                            <span class="intervention-priority">@intervention.Priority</span>
+                            <div class="intervention-content">
+                                <strong>@intervention.Title</strong>
+                                <p>@intervention.Description</p>
+                                @if (!string.IsNullOrEmpty(intervention.ActionText))
+                                {
+                                    <button class="btn-intervention" @onclick="() => TriggerIntervention(intervention)">
+                                        @intervention.ActionText
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Crisis Resources (always visible but highlighted when needed) -->
+        <div class="crisis-resources @(_trendScore.OverallRiskLevel == RiskLevel.Critical ? "crisis-active" : "")">
+            <h3>🚨 Crisis Resources</h3>
+            <div class="crisis-buttons">
+                <button class="btn-crisis" @onclick="ShowCrisisLine">
+                    📞 988 Suicide & Crisis Lifeline
+                </button>
+                <button class="btn-crisis" @onclick="ShowEmergency">
+                    🚑 Call 911 (Emergency)
+                </button>
+                <button class="btn-crisis" @onclick="ShowTextLine">
+                    💬 Crisis Text Line (Text "HELLO" to 741741)
+                </button>
+            </div>
+            <p class="crisis-note">If you're in immediate danger, please call 911 or go to your nearest emergency room.</p>
+        </div>
+    }
+
+    <!-- Quick Log Section -->
+    <div class="quick-log-section">
+        <h3>Quick Log</h3>
+        <div class="quick-log-buttons">
+            <button class="btn-quick-log" @onclick="() => ShowLogDialog(HealthEventType.Mood)">
+                😊 Log Mood
+            </button>
+            <button class="btn-quick-log" @onclick="() => ShowLogDialog(HealthEventType.Sleep)">
+                😴 Log Sleep
+            </button>
+            <button class="btn-quick-log" @onclick="() => ShowLogDialog(HealthEventType.Routine)">
+                ✅ Log Routine
+            </button>
+            <button class="btn-quick-log" @onclick="ViewDetailedHistory">
+                📊 View History
+            </button>
+        </div>
+    </div>
+
+    @if (_showLogDialog)
+    {
+        <div class="modal-overlay" @onclick="CloseLogDialog">
+            <div class="modal-content" @onclick:stopPropagation>
+                <h3>Log @_currentLogType</h3>
+                
+                @if (_currentLogType == HealthEventType.Mood)
+                {
+                    <div class="mood-selector">
+                        <label>How are you feeling?</label>
+                        <div class="mood-buttons">
+                            @foreach (var mood in new[] { (-2, "😢 Very Low"), (-1, "😟 Low"), (0, "😐 Neutral"), (1, "😊 Good"), (2, "😄 Great") })
+                            {
+                                <button class="mood-btn @(_newEvent.MoodScore == mood.Item1 ? "selected" : "")" 
+                                        @onclick="() => _newEvent.MoodScore = mood.Item1">
+                                    @mood.Item2
+                                </button>
+                            }
+                        </div>
+                        <label>Feeling label (optional)</label>
+                        <input type="text" @bind="_newEvent.MoodLabel" placeholder="e.g., anxious, calm, energized" />
+                    </div>
+                }
+                else if (_currentLogType == HealthEventType.Sleep)
+                {
+                    <div class="sleep-form">
+                        <label>Sleep Start</label>
+                        <input type="datetime-local" @bind="_sleepStart" />
+                        
+                        <label>Sleep End</label>
+                        <input type="datetime-local" @bind="_sleepEnd" />
+                        
+                        <label>Sleep Quality (1-5)</label>
+                        <input type="range" min="1" max="5" @bind="_newEvent.SleepQuality" />
+                        <span>@_newEvent.SleepQuality / 5</span>
+                    </div>
+                }
+                else if (_currentLogType == HealthEventType.Routine)
+                {
+                    <div class="routine-form">
+                        <label>Routine Name</label>
+                        <input type="text" @bind="_newEvent.RoutineName" placeholder="e.g., morning routine, medication" />
+                        
+                        <label>
+                            <input type="checkbox" @bind="_newEvent.RoutineCompleted" />
+                            Completed
+                        </label>
+                    </div>
+                }
+
+                <label>Note (optional)</label>
+                <textarea @bind="_newEvent.Note" placeholder="Any additional notes..." rows="3"></textarea>
+
+                <div class="modal-actions">
+                    <button class="btn-primary" @onclick="SaveHealthEvent">Save</button>
+                    <button class="btn-secondary" @onclick="CloseLogDialog">Cancel</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool _loading = true;
+    private HealthTrendScore? _trendScore;
+    private NyphosRiskAssessment? _nyphosAssessment;
+    private bool _showLogDialog = false;
+    private HealthEventType _currentLogType;
+    private HealthEventRequest _newEvent = new();
+    private DateTime? _sleepStart;
+    private DateTime? _sleepEnd;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTrendScoreAsync();
+    }
+
+    private async Task LoadTrendScoreAsync()
+    {
+        _loading = true;
+        try
+        {
+            // Load Nyphos assessment (enhanced risk engine)
+            _nyphosAssessment = await Http.GetFromJsonAsync<NyphosRiskAssessment>("/api/nyphos/assessment");
+            
+            // Also load legacy trend score for backward compatibility
+            _trendScore = await Http.GetFromJsonAsync<HealthTrendScore>("/api/health/trends");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading assessment: {ex.Message}");
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private string GetRiskLevelIcon(RiskLevel level) => level switch
+    {
+        RiskLevel.Normal => "✅",
+        RiskLevel.Moderate => "⚠️",
+        RiskLevel.Elevated => "🟡",
+        RiskLevel.High => "🟠",
+        RiskLevel.Critical => "🚨",
+        _ => "❓"
+    };
+
+    private List<Intervention> GetInterventions(RiskLevel level)
+    {
+        return level switch
+        {
+            RiskLevel.Critical => new List<Intervention>
+            {
+                new("🚨", "Contact Crisis Support Immediately", "Your metrics indicate significant distress. Please reach out to a crisis line or emergency services.", "Call 988 Now"),
+                new("👥", "Contact Your Support Person", "Reach out to a trusted friend, family member, or your therapist.", "View Contacts"),
+                new("🛌", "Focus on Basic Self-Care", "Rest, hydrate, and ensure you're in a safe environment.", null)
+            },
+            RiskLevel.High => new List<Intervention>
+            {
+                new("📞", "Check In With Your Therapist", "Consider scheduling an appointment or reaching out sooner than planned.", "Schedule Appointment"),
+                new("😴", "Prioritize Sleep Tonight", "Set a bedtime alarm and create a calm environment.", null),
+                new("🧘", "Practice Grounding Techniques", "Try box breathing or a brief meditation.", "Start Meditation")
+            },
+            RiskLevel.Elevated => new List<Intervention>
+            {
+                new("📝", "Review Your Routine", "Check what activities you've missed and prioritize one for today.", null),
+                new("🚶", "Get Outside", "A short walk can help reset your mood and energy.", null),
+                new("💬", "Connect With Someone", "Reach out to a friend or join a support group.", null)
+            },
+            _ => new List<Intervention>()
+        };
+    }
+
+    private void ShowLogDialog(HealthEventType eventType)
+    {
+        _currentLogType = eventType;
+        _newEvent = new HealthEventRequest { EventType = eventType, RecordedAtUtc = DateTime.UtcNow };
+        _sleepStart = null;
+        _sleepEnd = null;
+        _showLogDialog = true;
+    }
+
+    private void CloseLogDialog()
+    {
+        _showLogDialog = false;
+    }
+
+    private async Task SaveHealthEvent()
+    {
+        if (_currentLogType == HealthEventType.Sleep)
+        {
+            _newEvent.SleepStartUtc = _sleepStart;
+            _newEvent.SleepEndUtc = _sleepEnd;
+        }
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("/api/health/events", _newEvent);
+            if (response.IsSuccessStatusCode)
+            {
+                CloseLogDialog();
+                await LoadTrendScoreAsync(); // Refresh
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving health event: {ex.Message}");
+        }
+    }
+
+    private void TriggerIntervention(Intervention intervention)
+    {
+        // TODO: Implement intervention actions
+        Console.WriteLine($"Intervention triggered: {intervention.Title}");
+    }
+
+    private void ShowCrisisLine() => Navigation.NavigateTo("tel:988");
+    private void ShowEmergency() => Navigation.NavigateTo("tel:911");
+    private void ShowTextLine() => Navigation.NavigateTo("sms:741741?body=HELLO");
+    private void ViewDetailedHistory() => Navigation.NavigateTo("/wellness/history");
+
+    private record Intervention(string Priority, string Title, string Description, string? ActionText);
+}

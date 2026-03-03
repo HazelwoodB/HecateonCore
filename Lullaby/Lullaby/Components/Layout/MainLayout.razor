@@ -1,0 +1,23 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <span class="app-status">Lullaby v1.0</span>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    <span class="error-text">An error occurred. Please refresh to continue.</span>
+    <a href="." class="reload">Refresh</a>
+    <span class="dismiss">✕</span>
+</div>

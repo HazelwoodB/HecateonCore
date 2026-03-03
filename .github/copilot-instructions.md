@@ -1,0 +1,4 @@
+# Copilot Instructions
+
+## Project Guidelines
+- For the AutoPC rework, prioritize a local-first, privacy-first, safety-first architecture with predictable behavior and strong user agency. Use home server as source of truth with append-only event store, offline-capable encrypted clients, VPN-only remote access with trusted device registry, interpretable risk engine with explainable outputs and hysteresis, deterministic intervention ladder, explicit consent boundaries, clinician-ready reporting, encrypted backups, versioned rules/models, and MVP focus on event log+sync, sleep/mood/routines, explainable trend scoring, downshift/crisis UI, weekly export, and trusted remote access.
