@@ -48,7 +48,7 @@ if (-not (Test-Path $gitPath)) {
     }
 }
 
-$launcherPath = Join-Path $resolvedInstallPath "RUN_HECATEON_DESKTOP.cmd"
+$launcherPath = Join-Path $resolvedInstallPath "START.cmd"
 if (-not (Test-Path $launcherPath)) {
     throw "Launcher not found at $launcherPath"
 }
@@ -60,7 +60,6 @@ if (-not $NoDesktopShortcut) {
     $wsh = New-Object -ComObject WScript.Shell
     $shortcut = $wsh.CreateShortcut($shortcutPath)
     $shortcut.TargetPath = $launcherPath
-    $shortcut.Arguments = "main popup"
     $shortcut.WorkingDirectory = $resolvedInstallPath
     $shortcut.Description = "Launch Hecateon"
     $shortcut.Save()

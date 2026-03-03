@@ -1,27 +1,13 @@
-# Hecateon
+# Hecateon Core
 
-Hecateon is a local-first deterministic monitoring platform with a clear identity hierarchy:
+Single start entrypoint: `START.cmd`  
+Single documentation entrypoint: `DOCUMENTATION.md`
 
-- Platform: Hecateon
-- Runtime: Hecateon Core
-- Desktop: Hecateon Desktop
-- Modules: Nyphos, Prometheon
-
-## Launch
-
-Use:
-
-```bat
-RUN_HECATEON_DESKTOP.cmd
-```
-
-For stable installation outside editor caches:
-
-```bat
-INSTALL_HECATEON_STABLE.cmd
-```
+## Quick Start
+- Double-click `START.cmd`
 
 ## Documentation
+- Read `DOCUMENTATION.md`
 
-- System overview: `Documentation/HECATEON_SYSTEM_OVERVIEW.md`
-- Legacy references: `Documentation/Legacy/AutoPC_History.md`
+## Upload/Push
+- Run `tools\commit-and-push.ps1`
