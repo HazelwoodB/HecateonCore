@@ -7,7 +7,7 @@ echo  Changing Git Remote to HecateonCore
 echo ================================================
 echo.
 
-cd /d "%USERPROFILE%\source\repos\Lullaby"
+cd /d "%USERPROFILE%\source\repos\HecateonCore"
 
 REM Find Git installation
 set "GIT_CMD="

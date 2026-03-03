@@ -32,14 +32,14 @@ dotnet run
 
 **Terminal 2 - Start Desktop App:**
 ```powershell
-cd Lullaby\Lullaby.Desktop
+cd Hecateon.Desktop
 dotnet run
 ```
 
-## Features
+- Send messages to Hecateon AI assistant
 
 ### 💬 Chat Tab
-- Send messages to Lullaby AI assistant
+│   Hecateon.Desktop (WPF)                       │
 - Real-time responses from backend
 - Message history loaded automatically
 - Connection status indicator
@@ -48,7 +48,7 @@ dotnet run
 ### ❤️ Health Tab
 - Log mood (Great, Good, Neutral, Poor, Very Poor)
 - Track sleep hours (0-12 hours)
-- Submit daily health entries
+cd Hecateon.Desktop
 - Last entry timestamp displayed
 - Data sent to secure backend
 
@@ -73,9 +73,9 @@ dotnet run
 │   Hecateon Core Runtime (ASP.NET Core)         │
 │   ├─ /api/chat - Send chat messages            │
 │   ├─ /api/history - Fetch message history      │
-│   ├─ /api/health/log - Log health entries      │
+    └── Hecateon.Desktop.csproj # Project file
 │   ├─ /api/nyphos/* - Risk assessment           │
-│   ├─ /api/hecateon/device/* - Device mgmt      │
+This project is part of Hecateon - Mental Health Companion.  
 │   └─ Encryption Service (AES-256-GCM)          │
 └─────────────────────────────────────────────────┘
 ```
@@ -109,7 +109,7 @@ dotnet build
 ### Desktop app won't launch
 ```powershell
 # Build desktop project
-cd Lullaby\Lullaby.Desktop
+cd Hecateon.Desktop
 dotnet restore
 dotnet build
 dotnet run
@@ -137,7 +137,7 @@ HecateonCore/
 └── Hecateon.Desktop/          # Desktop App (WPF, .NET 8)
     ├── MainWindow.xaml        # UI Layout
     ├── MainWindow.xaml.cs     # Code-behind logic
-    └── Lullaby.Desktop.csproj # Project file
+    └── Hecateon.Desktop.csproj # Project file
 ```
 
 ### Building
@@ -150,7 +150,7 @@ dotnet build
 
 Publish as single-file EXE (coming next):
 ```powershell
-cd Lullaby.Desktop
+cd Hecateon.Desktop
 dotnet publish -c Release -r win-x64 --self-contained
 ```
 
@@ -204,7 +204,7 @@ For issues or questions about the desktop implementation:
 
 ## License
 
-This project is part of Lullaby - Mental Health Companion.  
+This project is part of Hecateon - Mental Health Companion.
 Designed with local-first, deterministic, safety-bounded principles.
 
 ---

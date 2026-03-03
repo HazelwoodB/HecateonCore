@@ -1,4 +1,4 @@
-# HecateonCore - Lullaby Desktop Application
+# HecateonCore - Hecateon Desktop Application
 ## Comprehensive Project Overview
 
 **Repository**: `https://github.com/HazelwoodB/HecateonCore.git`  
@@ -42,14 +42,14 @@
 
 ### System Components
 
-#### **1. Lullaby Desktop Application** (WPF)
+#### **1. Hecateon Desktop Application** (WPF)
 - Main UI for personal wellness tracking
 - Local-first data storage
 - Real-time monitoring and visualization
 - Crisis intervention UI
-- Located: `Lullaby.Desktop/`
+- Located: `Hecateon.Desktop/`
 
-#### **2. Lullaby Web Application** (ASP.NET Core)
+#### **2. Hecateon Core Web Application** (ASP.NET Core)
 - Web-based interface
 - Bootstrap 5 UI framework
 - RESTful API endpoints
@@ -57,10 +57,9 @@
 
 #### **3. Launcher System**
 Multiple entry points for ease of use:
-- `START_LULLABY_DESKTOP.cmd` (Desktop shortcut)
-- `RUN_LULLABY_DESKTOP.cmd` (PowerShell wrapper)
-- `RUN_LULLABY_DESKTOP.ps1` (Direct PowerShell)
-- `RUN_LULLABY_DESKTOP_BATCH.cmd` (Batch file)
+- `START_HECATEON_DESKTOP.cmd` (Desktop shortcut)
+- `RUN_HECATEON_DESKTOP.cmd` (Canonical launcher)
+- `RUN_LULLABY_DESKTOP_BATCH.cmd` (Legacy compatibility shim)
 - `RUN_LULLABY_WITH_VALIDATION.cmd` (With system checks)
 
 #### **4. Validation System**
@@ -125,11 +124,11 @@ Multiple entry points for ease of use:
 Lullaby/
 ├── .github/
 │   └── copilot-instructions.md          # Development guidelines
-├── Lullaby.Desktop/                      # WPF Desktop Application
+├── Hecateon.Desktop/                    # WPF Desktop Application
 │   ├── MainWindow.xaml                   # Main UI layout
 │   ├── MainWindow.xaml.cs                # UI logic
 │   ├── App.xaml                          # Application resources
-│   ├── Lullaby.Desktop.csproj            # Project file
+│   ├── Hecateon.Desktop.csproj          # Project file
 │   └── REFINEMENT_NOTES.md               # Development notes
 ├── Lullaby/                              # Web Application
 │   └── Lullaby/
@@ -147,10 +146,9 @@ Lullaby/
 │   ├── WELLNESS_FEATURES.md              # Feature documentation
 │   └── COMPREHENSIVE_REFINEMENT_SUMMARY.md
 ├── Launchers/
-│   ├── START_LULLABY_DESKTOP.cmd         # Quick start (Desktop)
-│   ├── RUN_LULLABY_DESKTOP.cmd           # Main launcher
-│   ├── RUN_LULLABY_DESKTOP.ps1           # PowerShell version
-│   ├── RUN_LULLABY_DESKTOP_BATCH.cmd     # Batch version
+│   ├── START_HECATEON_DESKTOP.cmd        # Quick start (Desktop)
+│   ├── RUN_HECATEON_DESKTOP.cmd          # Main launcher
+│   ├── RUN_LULLABY_DESKTOP_BATCH.cmd     # Legacy shim
 │   └── RUN_LULLABY_WITH_VALIDATION.cmd   # With validation
 ├── Tools/
 │   ├── CHECK_SYSTEM.cmd                  # System validator
@@ -174,37 +172,37 @@ Lullaby/
 
 **Option 1: Double-click Shortcut**
 ```
-Desktop\START_LULLABY_DESKTOP.cmd
+Desktop\START_HECATEON_DESKTOP.cmd
 ```
 
 **Option 2: From Project Directory**
 ```cmd
-cd %USERPROFILE%\source\repos\Lullaby
-RUN_LULLABY_DESKTOP_BATCH.cmd
+cd %USERPROFILE%\source\repos\HecateonCore
+RUN_HECATEON_DESKTOP.cmd
 ```
 
 **Option 3: With Validation**
 ```cmd
-cd %USERPROFILE%\source\repos\Lullaby
+cd %USERPROFILE%\source\repos\HecateonCore
 RUN_LULLABY_WITH_VALIDATION.cmd
 ```
 
 **Option 4: PowerShell**
 ```powershell
-cd $env:USERPROFILE\source\repos\Lullaby
-.\RUN_LULLABY_DESKTOP.ps1
+cd $env:USERPROFILE\source\repos\HecateonCore
+.\RUN_HECATEON_DESKTOP.cmd
 ```
 
 ### Build from Source
 
 **Using Visual Studio:**
 1. Open `Lullaby.slnx`
-2. Set `Lullaby.Desktop` as startup project
+2. Set `Hecateon.Desktop` as startup project
 3. Press F5 to build and run
 
 **Using Command Line:**
 ```cmd
-cd %USERPROFILE%\source\repos\Lullaby\Lullaby.Desktop
+cd %USERPROFILE%\source\repos\HecateonCore\Hecateon.Desktop
 dotnet build
 dotnet run
 ```
@@ -213,7 +211,7 @@ dotnet run
 
 ## 🎨 Key Features
 
-### Desktop Application (Lullaby.Desktop)
+### Desktop Application (Hecateon.Desktop)
 
 #### 1. **Personal Dashboard**
 - Real-time wellness metrics
@@ -399,7 +397,7 @@ dotnet test
 ### Repository Information
 - **Remote**: `https://github.com/HazelwoodB/HecateonCore.git`
 - **Branch**: `main`
-- **Local Path**: `C:\Users\hazel\source\repos\Lullaby`
+- **Local Path**: `C:\Users\hazel\source\repos\HecateonCore`
 
 ### Common Commands
 
@@ -575,7 +573,7 @@ From `.github/copilot-instructions.md`:
 
 #### Desktop App Won't Launch
 1. Check .NET SDK: `dotnet --version`
-2. Verify project path: `cd %USERPROFILE%\source\repos\Lullaby`
+2. Verify project path: `cd %USERPROFILE%\source\repos\HecateonCore`
 3. Run validation: `CHECK_SYSTEM.cmd`
 4. Check logs in Output window
 

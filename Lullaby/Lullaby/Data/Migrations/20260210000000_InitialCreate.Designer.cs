@@ -24,7 +24,7 @@ namespace Hecateon.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AutoPC.Models.ChatMessage", b =>
+            modelBuilder.Entity("Hecateon.Models.ChatMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
