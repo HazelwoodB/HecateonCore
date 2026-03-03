@@ -4,110 +4,106 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Lullaby - Mental Health Companion" 
-        Height="820" 
+        Title="Lullaby - Mental Health Companion"
+        Height="820"
         Width="1280"
         WindowStartupLocation="CenterScreen"
-        Background="#FAFBFC"
-        Foreground="#1A1A1A"
+        Background="#0E0A17"
+        Foreground="#F4E8D1"
         FontFamily="Segoe UI"
         FontSize="14"
         MinHeight="700"
-        MinWidth="900">
-    
+        MinWidth="1100">
+
     <Window.Resources>
-        <Color x:Key="Primary">#6366F1</Color>
-        <Color x:Key="PrimaryLight">#A5B4FC</Color>
-        <Color x:Key="PrimaryDark">#4F46E5</Color>
-        <Color x:Key="Success">#10B981</Color>
-        <Color x:Key="Warning">#F59E0B</Color>
-        <Color x:Key="Error">#EF4444</Color>
-        <Color x:Key="Surface">#FFFFFF</Color>
-        <Color x:Key="SurfaceAlt">#F3F4F6</Color>
-        <Color x:Key="BorderColor">#E5E7EB</Color>
-        <Color x:Key="TextDark">#111827</Color>
-        <Color x:Key="TextMed">#6B7280</Color>
-        <Color x:Key="TextLight">#9CA3AF</Color>
-        
-        <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
-        <SolidColorBrush x:Key="PrimaryLightBrush" Color="{StaticResource PrimaryLight}"/>
-        <SolidColorBrush x:Key="PrimaryDarkBrush" Color="{StaticResource PrimaryDark}"/>
-        <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource Success}"/>
-        <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource Surface}"/>
-        <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
-        <SolidColorBrush x:Key="TextDarkBrush" Color="{StaticResource TextDark}"/>
-        <SolidColorBrush x:Key="TextMedBrush" Color="{StaticResource TextMed}"/>
-        <SolidColorBrush x:Key="TextLightBrush" Color="{StaticResource TextLight}"/>
+        <SolidColorBrush x:Key="BgBrush" Color="#0E0A17"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#181226"/>
+        <SolidColorBrush x:Key="PanelAltBrush" Color="#22182F"/>
+        <SolidColorBrush x:Key="PanelRaisedBrush" Color="#2A1E39"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#6A4D31"/>
+        <SolidColorBrush x:Key="BorderSoftBrush" Color="#4D3A28"/>
+        <SolidColorBrush x:Key="GoldBrush" Color="#E7C58A"/>
+        <SolidColorBrush x:Key="GoldSoftBrush" Color="#BE9B6A"/>
+        <SolidColorBrush x:Key="TextMainBrush" Color="#F3E4CB"/>
+        <SolidColorBrush x:Key="TextMutedBrush" Color="#C5B39A"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#35C86A"/>
+        <SolidColorBrush x:Key="InputBrush" Color="#130E1D"/>
+        <SolidColorBrush x:Key="UserBubbleBrush" Color="#2C2239"/>
+        <SolidColorBrush x:Key="AssistantBubbleBrush" Color="#1B1427"/>
 
-        <Style x:Key="TabItemStyle" TargetType="TabItem">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource TextMedBrush}"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabItem">
-                        <Border Background="Transparent" BorderThickness="0,0,0,3" BorderBrush="Transparent" Padding="18,14" Name="Border">
-                            <ContentPresenter ContentSource="Header" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
-                                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
-                                <Setter Property="FontWeight" Value="Bold"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="#F9FAFB"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <LinearGradientBrush x:Key="WindowGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#120B1D" Offset="0"/>
+            <GradientStop Color="#2A1D35" Offset="0.45"/>
+            <GradientStop Color="#171124" Offset="1"/>
+        </LinearGradientBrush>
 
-        <Style x:Key="ButtonStyle" TargetType="Button">
-            <Setter Property="Padding" Value="16,12"/>
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="FontSize" Value="17"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="#2B1F38"/>
+            <Setter Property="Foreground" Value="{StaticResource GoldBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
+                    <Setter Property="Background" Value="#3A2A4B"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
+                    <Setter Property="Background" Value="#1E1728"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="TextBoxStyle" TargetType="TextBox">
-            <Setter Property="Padding" Value="13"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource TextDarkBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-            <Setter Property="BorderThickness" Value="1.5"/>
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource InputBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMainBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderSoftBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="FontSize" Value="16"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12">
                             <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
                         </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource GoldBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="LeftNavTabItemStyle" TargetType="TabItem">
+            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="NavBorder" Margin="8,4" Padding="14,10" CornerRadius="10" BorderBrush="Transparent" BorderThickness="1" Background="Transparent">
+                            <ContentPresenter ContentSource="Header"/>
+                        </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="NavBorder" Property="Background" Value="#2B1F38"/>
+                                <Setter TargetName="NavBorder" Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource GoldBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="NavBorder" Property="Background" Value="#21182E"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -116,189 +112,256 @@
         </Style>
     </Window.Resources>
 
-    <DockPanel LastChildFill="True">
-        <!-- Header -->
-        <Border DockPanel.Dock="Top" Background="{StaticResource PrimaryBrush}" Padding="32,20">
-            <Grid>
-                <StackPanel>
-                    <TextBlock Text="?? Lullaby" FontSize="32" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Text="Your Personal Mental Health Companion" FontSize="13" Foreground="#E0E7FF" Margin="0,5,0,0" Opacity="0.95"/>
+    <Grid Background="{StaticResource WindowGradient}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#111111" BorderBrush="#3E2F1E" BorderThickness="0,0,0,1">
+            <DockPanel LastChildFill="True" VerticalAlignment="Center">
+                <TextBlock Text="Lullaby" Foreground="{StaticResource TextMainBrush}" FontSize="22" FontWeight="SemiBold" Margin="14,0,0,0" VerticalAlignment="Center"/>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="0,0,14,0" VerticalAlignment="Center">
+                    <TextBlock Text="●" Foreground="#8A7A63" FontSize="12" Margin="0,0,10,0"/>
+                    <TextBlock Text="●" Foreground="#8A7A63" FontSize="12" Margin="0,0,10,0"/>
+                    <TextBlock Text="□" Foreground="#8A7A63" FontSize="12"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <Ellipse x:Name="ConnectionDot" Width="12" Height="12" Fill="{StaticResource SuccessBrush}" Margin="0,0,14,0"/>
-                    <TextBlock x:Name="ConnectionStatus" Text="Connected" Foreground="White" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold"/>
-                </StackPanel>
-            </Grid>
+            </DockPanel>
         </Border>
 
-        <!-- Tabs -->
-        <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1">
-            <TabControl Background="White" TabStripPlacement="Top" Margin="0" Padding="0">
-                <TabItem Header="?? Messages" Style="{StaticResource TabItemStyle}">
-                    <Grid Background="#F8F9FA">
+        <Border Grid.Row="1" Margin="10" Padding="10" CornerRadius="12" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Background="#120D1D">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Margin="0,0,10,0" Background="#171125" BorderBrush="{StaticResource BorderSoftBrush}" BorderThickness="1" CornerRadius="10">
+                    <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <ListBox x:Name="MessagesList" Grid.Row="0" Background="#F8F9FA" BorderThickness="0" ItemsSource="{Binding ChatMessages}" ScrollViewer.VerticalScrollBarVisibility="Auto" Padding="24">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,10,0,10">
-                                        <StackPanel HorizontalAlignment="Right" Visibility="{Binding IsUserVisibility}" Margin="100,0,0,0" MaxWidth="550">
-                                            <Border Background="{StaticResource PrimaryBrush}" Padding="16,12" CornerRadius="18,18,6,18">
-                                                <TextBlock Text="{Binding Text}" Foreground="White" TextWrapping="Wrap" FontSize="13" LineHeight="20"/>
-                                            </Border>
-                                            <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" Foreground="{StaticResource TextLightBrush}" FontSize="11" Margin="0,8,0,0" TextAlignment="Right"/>
-                                        </StackPanel>
-
-                                        <StackPanel HorizontalAlignment="Left" Visibility="{Binding IsAssistantVisibility}" Margin="0,0,100,0" MaxWidth="550">
-                                            <Border Background="White" Padding="16,12" CornerRadius="18,18,18,6" BorderBrush="#E5E7EB" BorderThickness="1">
-                                                <TextBlock Text="{Binding Text}" Foreground="{StaticResource TextDarkBrush}" TextWrapping="Wrap" FontSize="13" LineHeight="20"/>
-                                            </Border>
-                                            <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" Foreground="{StaticResource TextLightBrush}" FontSize="11" Margin="0,8,0,0"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-
-                        <!-- Error -->
-                        <Border Grid.Row="0" Background="#FECACA" BorderBrush="#FCA5A5" BorderThickness="0,0,0,1" Padding="18" Visibility="Collapsed" x:Name="ErrorBanner" VerticalAlignment="Top">
+                        <Border Grid.Row="0" Margin="10" Padding="12" Background="#20172F" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="10">
                             <StackPanel>
-                                <TextBlock Text="?? Error" Foreground="#7F1D1D" FontWeight="Bold" FontSize="13"/>
-                                <TextBlock x:Name="ErrorMessage" Foreground="#991B1B" TextWrapping="Wrap" FontSize="12" Margin="0,6,0,0"/>
+                                <TextBlock Text="Lullaby" FontSize="44" FontWeight="Bold" Foreground="{StaticResource GoldBrush}"/>
+                                <TextBlock Text="Deterministic Mental State Monitor" FontSize="12" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0"/>
                             </StackPanel>
                         </Border>
 
-                        <!-- Input -->
-                        <Border Grid.Row="1" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,1,0,0" Padding="24">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="110"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBox x:Name="ChatInput" Grid.Column="0" Style="{StaticResource TextBoxStyle}" MinHeight="50" MaxHeight="130" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,14,0"/>
-                                <Button Grid.Column="1" Content="Send" Click="SendMessage_Click" Style="{StaticResource ButtonStyle}" MinHeight="50" VerticalAlignment="Bottom"/>
-                            </Grid>
+                        <Border Grid.Row="1" Margin="10,0,10,0" Background="Transparent">
+                            <TabControl x:Name="MainTabs" TabStripPlacement="Left" Background="Transparent" BorderThickness="0">
+                                <TabControl.Resources>
+                                    <Style TargetType="TabPanel">
+                                        <Setter Property="IsItemsHost" Value="True"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                </TabControl.Resources>
+
+                                <TabItem Style="{StaticResource LeftNavTabItemStyle}">
+                                    <TabItem.Header>
+                                        <TextBlock Text="✦  Chat" FontSize="30" FontWeight="SemiBold"/>
+                                    </TabItem.Header>
+                                    <Grid Background="Transparent">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="280"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid Grid.Column="0" Margin="14,10,10,10">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                                                <TextBlock Text="CHAT • STATE READINESS • 4h WINDOW" Foreground="{StaticResource TextMutedBrush}" FontSize="13"/>
+                                                <DockPanel Margin="0,4,0,0">
+                                                    <TextBlock Text="LULLABY" Foreground="{StaticResource GoldBrush}" FontSize="28" FontWeight="SemiBold"/>
+                                                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                                                        <Ellipse x:Name="ConnectionDot" Width="10" Height="10" Fill="{StaticResource SuccessBrush}" Margin="0,0,8,0"/>
+                                                        <TextBlock x:Name="ConnectionStatus" Text="Connected" Foreground="{StaticResource TextMainBrush}" FontSize="14"/>
+                                                    </StackPanel>
+                                                </DockPanel>
+                                            </StackPanel>
+
+                                            <Grid Grid.Row="1">
+                                                <ListBox x:Name="MessagesList" Background="Transparent" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" Padding="6" ItemsSource="{Binding ChatMessages}">
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid Margin="0,8,0,8">
+                                                                <StackPanel HorizontalAlignment="Right" Visibility="{Binding IsUserVisibility}" Margin="140,0,0,0" MaxWidth="560">
+                                                                    <Border Background="{StaticResource UserBubbleBrush}" BorderBrush="{StaticResource BorderSoftBrush}" BorderThickness="1" CornerRadius="18" Padding="14,10">
+                                                                        <TextBlock Text="{Binding Text}" Foreground="{StaticResource GoldBrush}" TextWrapping="Wrap" FontSize="17" LineHeight="22"/>
+                                                                    </Border>
+                                                                    <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="0,6,4,0" TextAlignment="Right"/>
+                                                                </StackPanel>
+                                                                <StackPanel HorizontalAlignment="Left" Visibility="{Binding IsAssistantVisibility}" Margin="0,0,140,0" MaxWidth="560">
+                                                                    <Border Background="{StaticResource AssistantBubbleBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="18" Padding="14,10">
+                                                                        <TextBlock Text="{Binding Text}" Foreground="{StaticResource TextMainBrush}" TextWrapping="Wrap" FontSize="17" LineHeight="22"/>
+                                                                    </Border>
+                                                                    <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="4,6,0,0"/>
+                                                                </StackPanel>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+                                                </ListBox>
+
+                                                <Border x:Name="ErrorBanner" Visibility="Collapsed" VerticalAlignment="Top" Margin="6" Background="#5B1F24" BorderBrush="#C55D62" BorderThickness="1" CornerRadius="8" Padding="12">
+                                                    <StackPanel>
+                                                        <TextBlock Text="Error" FontWeight="Bold" Foreground="#FFD8D8"/>
+                                                        <TextBlock x:Name="ErrorMessage" Foreground="#FFD8D8" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Grid>
+
+                                            <Grid Grid.Row="2" Margin="0,10,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="120"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox x:Name="ChatInput" Grid.Column="0" Style="{StaticResource InputTextBoxStyle}" MinHeight="56" MaxHeight="120" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,10,0"/>
+                                                <Button Grid.Column="1" Content="Send" Style="{StaticResource PrimaryButtonStyle}" Click="SendMessage_Click" MinHeight="56"/>
+                                            </Grid>
+                                        </Grid>
+
+                                        <Border Grid.Column="1" Margin="0,10,10,10" Background="{StaticResource PanelAltBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="14">
+                                            <StackPanel>
+                                                <TextBlock Text="LIVE STATE METRICS" Foreground="{StaticResource GoldBrush}" FontSize="18" FontWeight="SemiBold"/>
+                                                <Border Background="#1A3A2A" BorderBrush="#4D8E63" BorderThickness="1" CornerRadius="14" Padding="10,4" HorizontalAlignment="Left" Margin="0,10,0,14">
+                                                    <TextBlock Text="STABLE" Foreground="#B8F1C8" FontSize="12" FontWeight="SemiBold"/>
+                                                </Border>
+
+                                                <StackPanel>
+                                                    <DockPanel><TextBlock Text="Operator" Foreground="{StaticResource TextMainBrush}"/><TextBlock Text="53%" Foreground="{StaticResource GoldBrush}" DockPanel.Dock="Right"/></DockPanel>
+                                                    <ProgressBar Value="53" Height="8" Margin="0,4,0,12" Background="#312338" Foreground="#D7A95D"/>
+                                                    <DockPanel><TextBlock Text="Child" Foreground="{StaticResource TextMainBrush}"/><TextBlock Text="47%" Foreground="{StaticResource GoldBrush}" DockPanel.Dock="Right"/></DockPanel>
+                                                    <ProgressBar Value="47" Height="8" Margin="0,4,0,12" Background="#312338" Foreground="#D7A95D"/>
+                                                    <DockPanel><TextBlock Text="Beast" Foreground="{StaticResource TextMainBrush}"/><TextBlock Text="16%" Foreground="{StaticResource GoldBrush}" DockPanel.Dock="Right"/></DockPanel>
+                                                    <ProgressBar Value="16" Height="8" Margin="0,4,0,12" Background="#312338" Foreground="#D7A95D"/>
+                                                    <DockPanel><TextBlock Text="Overload" Foreground="{StaticResource TextMainBrush}"/><TextBlock Text="6%" Foreground="{StaticResource GoldBrush}" DockPanel.Dock="Right"/></DockPanel>
+                                                    <ProgressBar Value="6" Height="8" Margin="0,4,0,12" Background="#312338" Foreground="#D7A95D"/>
+                                                </StackPanel>
+
+                                                <Separator Margin="0,6,0,10" Background="{StaticResource BorderSoftBrush}"/>
+                                                <DockPanel>
+                                                    <TextBlock Text="Sleep Integrity" Foreground="{StaticResource TextMainBrush}"/>
+                                                    <TextBlock Text="82%" Foreground="{StaticResource GoldBrush}" DockPanel.Dock="Right"/>
+                                                </DockPanel>
+                                                <ProgressBar Value="82" Height="8" Margin="0,6,0,14" Background="#312338" Foreground="#D7A95D"/>
+                                                <DockPanel>
+                                                    <TextBlock Text="Confidence: 41%" Foreground="{StaticResource TextMutedBrush}"/>
+                                                    <Button Content="View Log" Style="{StaticResource PrimaryButtonStyle}" FontSize="11" Padding="10,4" DockPanel.Dock="Right"/>
+                                                </DockPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </TabItem>
+
+                                <TabItem Style="{StaticResource LeftNavTabItemStyle}">
+                                    <TabItem.Header>
+                                        <TextBlock Text="◈  Health" FontSize="30"/>
+                                    </TabItem.Header>
+                                    <ScrollViewer Background="Transparent" Padding="16,14">
+                                        <StackPanel>
+                                            <TextBlock Text="Health Check-In" FontSize="36" FontWeight="SemiBold" Foreground="{StaticResource GoldBrush}"/>
+                                            <TextBlock Text="Track emotional and sleep state for deterministic trend analysis." Foreground="{StaticResource TextMutedBrush}" Margin="0,6,0,18"/>
+
+                                            <Border Background="{StaticResource PanelAltBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,14">
+                                                <StackPanel>
+                                                    <TextBlock Text="How are you feeling?" FontSize="20" Foreground="{StaticResource TextMainBrush}" Margin="0,0,0,10"/>
+                                                    <StackPanel x:Name="MoodButtonPanel" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                        <Button Content="😊&#10;Great" Tag="5" Click="MoodButton_Click" Style="{StaticResource PrimaryButtonStyle}" Width="120" Height="90" Margin="0,0,8,0" FontSize="15"/>
+                                                        <Button Content="🙂&#10;Good" Tag="4" Click="MoodButton_Click" Style="{StaticResource PrimaryButtonStyle}" Width="120" Height="90" Margin="0,0,8,0" FontSize="15"/>
+                                                        <Button Content="😐&#10;Okay" Tag="3" Click="MoodButton_Click" Style="{StaticResource PrimaryButtonStyle}" Width="120" Height="90" Margin="0,0,8,0" FontSize="15"/>
+                                                        <Button Content="☹️&#10;Bad" Tag="2" Click="MoodButton_Click" Style="{StaticResource PrimaryButtonStyle}" Width="120" Height="90" Margin="0,0,8,0" FontSize="15"/>
+                                                        <Button Content="😞&#10;Awful" Tag="1" Click="MoodButton_Click" Style="{StaticResource PrimaryButtonStyle}" Width="120" Height="90" FontSize="15"/>
+                                                    </StackPanel>
+                                                    <TextBlock x:Name="MoodLabel" Text="Select your mood to continue" Foreground="{StaticResource TextMutedBrush}" TextAlignment="Center" Margin="0,10,0,0"/>
+                                                </StackPanel>
+                                            </Border>
+
+                                            <Border Background="{StaticResource PanelAltBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,14">
+                                                <StackPanel>
+                                                    <TextBlock Text="Sleep duration" FontSize="20" Foreground="{StaticResource TextMainBrush}" Margin="0,0,0,8"/>
+                                                    <Slider x:Name="SleepSlider" Minimum="0" Maximum="12" Value="8" SmallChange="0.25" LargeChange="1"/>
+                                                    <TextBlock x:Name="SleepLabel" Text="8.0 hours" Foreground="{StaticResource GoldBrush}" FontSize="28" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                                </StackPanel>
+                                            </Border>
+
+                                            <Button Content="Save Entry" Click="LogHealth_Click" Style="{StaticResource PrimaryButtonStyle}" Width="220" Height="52" FontSize="18"/>
+                                            <Border Background="#173325" BorderBrush="#3E7A5B" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,12,0,0">
+                                                <TextBlock x:Name="HealthStatus" Text="No entries yet" Foreground="#AFF0C4" FontWeight="SemiBold"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </TabItem>
+
+                                <TabItem Style="{StaticResource LeftNavTabItemStyle}">
+                                    <TabItem.Header>
+                                        <TextBlock Text="⚙  Settings" FontSize="30"/>
+                                    </TabItem.Header>
+                                    <ScrollViewer Background="Transparent" Padding="16,14">
+                                        <StackPanel>
+                                            <TextBlock Text="Settings" FontSize="36" FontWeight="SemiBold" Foreground="{StaticResource GoldBrush}"/>
+                                            <TextBlock Text="Local identity, recovery controls, and privacy posture." Foreground="{StaticResource TextMutedBrush}" Margin="0,6,0,18"/>
+
+                                            <Border Background="{StaticResource PanelAltBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,12">
+                                                <StackPanel>
+                                                    <TextBlock Text="Device ID" Foreground="{StaticResource TextMainBrush}" FontWeight="SemiBold"/>
+                                                    <Grid Margin="0,8,0,0">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBox x:Name="DeviceIdBox" Grid.Column="0" Style="{StaticResource InputTextBoxStyle}" IsReadOnly="True" FontFamily="Consolas" FontSize="13"/>
+                                                        <Button Grid.Column="1" Content="Copy" Click="CopyDeviceId_Click" Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                            </Border>
+
+                                            <Border Background="#463A16" BorderBrush="#8C7340" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,12">
+                                                <StackPanel>
+                                                    <TextBlock Text="Recovery Code" Foreground="#F6E7B5" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="Store this code offline. It can bypass device approval." Foreground="#E2CF95" Margin="0,6,0,10"/>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBox x:Name="RecoveryCodeBox" Grid.Column="0" Style="{StaticResource InputTextBoxStyle}" IsReadOnly="True" FontFamily="Consolas" FontSize="13"/>
+                                                        <Button x:Name="ShowRecoveryBtn" Grid.Column="1" Content="Show" Click="ToggleRecoveryCode_Click" Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                            </Border>
+
+                                            <Border Background="{StaticResource PanelAltBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="16">
+                                                <StackPanel>
+                                                    <TextBlock Text="Security Baseline" Foreground="{StaticResource TextMainBrush}" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                                                    <TextBlock Text="• AES-256-GCM encrypted local state" Foreground="{StaticResource TextMutedBrush}"/>
+                                                    <TextBlock Text="• Append-only event log" Foreground="{StaticResource TextMutedBrush}"/>
+                                                    <TextBlock Text="• Offline-first control model" Foreground="{StaticResource TextMutedBrush}"/>
+                                                    <TextBlock Text="• Device remains source of truth" Foreground="{StaticResource TextMutedBrush}"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </TabItem>
+                            </TabControl>
+                        </Border>
+
+                        <Border Grid.Row="2" Margin="10" Padding="10" CornerRadius="10" BorderBrush="{StaticResource BorderSoftBrush}" BorderThickness="1" Background="#120E1D">
+                            <StackPanel>
+                                <TextBlock Text="● STABLE" Foreground="{StaticResource SuccessBrush}" FontSize="26" FontWeight="SemiBold"/>
+                                <TextBlock Text="Build #2214" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,4,0,0"/>
+                            </StackPanel>
                         </Border>
                     </Grid>
-                </TabItem>
-
-                <TabItem Header="?? Health" Style="{StaticResource TabItemStyle}">
-                    <ScrollViewer Background="White" Padding="32">
-                        <StackPanel MaxWidth="680">
-                            <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="Daily Check-In" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}"/>
-                                <TextBlock Text="Track your wellbeing to discover patterns" Foreground="{StaticResource TextMedBrush}" FontSize="14" Margin="0,5,0,0"/>
-                            </StackPanel>
-
-                            <Border Background="White" Padding="28" CornerRadius="14" BorderBrush="#E5E7EB" BorderThickness="1.5" Margin="0,20,0,20">
-                                <StackPanel>
-                                    <TextBlock Text="What's your mood today?" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}" FontSize="16" Margin="0,0,0,18"/>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,18">
-                                        <Button Content="??&#10;Great" Tag="5" Click="MoodButton_Click" Style="{StaticResource ButtonStyle}" Width="100" Height="100" Padding="8" FontSize="14" Margin="0,0,12,0"/>
-                                        <Button Content="??&#10;Good" Tag="4" Click="MoodButton_Click" Style="{StaticResource ButtonStyle}" Width="100" Height="100" Padding="8" FontSize="14" Margin="0,0,12,0"/>
-                                        <Button Content="??&#10;Okay" Tag="3" Click="MoodButton_Click" Style="{StaticResource ButtonStyle}" Width="100" Height="100" Padding="8" FontSize="14" Margin="0,0,12,0"/>
-                                        <Button Content="??&#10;Bad" Tag="2" Click="MoodButton_Click" Style="{StaticResource ButtonStyle}" Width="100" Height="100" Padding="8" FontSize="14" Margin="0,0,12,0"/>
-                                        <Button Content="??&#10;Awful" Tag="1" Click="MoodButton_Click" Style="{StaticResource ButtonStyle}" Width="100" Height="100" Padding="8" FontSize="14"/>
-                                    </StackPanel>
-                                    <TextBlock x:Name="MoodLabel" Text="Select your mood to continue" Foreground="{StaticResource TextMedBrush}" FontSize="13" TextAlignment="Center" Margin="0,6,0,0"/>
-                                </StackPanel>
-                            </Border>
-
-                            <Border Background="White" Padding="28" CornerRadius="14" BorderBrush="#E5E7EB" BorderThickness="1.5" Margin="0,0,0,20">
-                                <StackPanel>
-                                    <TextBlock Text="How much sleep did you get?" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}" FontSize="16" Margin="0,0,0,18"/>
-                                    <Slider x:Name="SleepSlider" Minimum="0" Maximum="12" SmallChange="0.25" LargeChange="1" Value="8" Height="6" Margin="0,0,0,14"/>
-                                    <TextBlock x:Name="SleepLabel" Text="8.0 hours" Foreground="{StaticResource PrimaryBrush}" FontWeight="Bold" FontSize="18" TextAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
-
-                            <Button Content="? Save Entry" Click="LogHealth_Click" Style="{StaticResource ButtonStyle}" Padding="16,16" FontSize="15" MinHeight="54" Width="200" Margin="0,0,0,20"/>
-
-                            <Border Background="#DCFCE7" Padding="22" CornerRadius="14" BorderBrush="#A7F3D0" BorderThickness="1.5">
-                                <StackPanel>
-                                    <TextBlock Text="Last Check-In" FontWeight="Bold" Foreground="#166534" FontSize="12" Margin="0,0,0,6"/>
-                                    <TextBlock x:Name="HealthStatus" Text="No entries yet" Foreground="#15803D" FontSize="14" FontWeight="SemiBold"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabItem>
-
-                <TabItem Header="?? Settings" Style="{StaticResource TabItemStyle}">
-                    <ScrollViewer Background="White" Padding="32">
-                        <StackPanel MaxWidth="680">
-                            <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="Settings" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}"/>
-                                <TextBlock Text="Manage your account and privacy" Foreground="{StaticResource TextMedBrush}" FontSize="14" Margin="0,5,0,0"/>
-                            </StackPanel>
-
-                            <Border Background="White" Padding="28" CornerRadius="14" BorderBrush="#E5E7EB" BorderThickness="1.5" Margin="0,20,0,20">
-                                <StackPanel>
-                                    <TextBlock Text="Device ID" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}" FontSize="15" Margin="0,0,0,16"/>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBox x:Name="DeviceIdBox" Grid.Column="0" Style="{StaticResource TextBoxStyle}" IsReadOnly="True" FontFamily="Courier New" FontSize="11" Padding="13" Height="46"/>
-                                        <Button Grid.Column="1" Content="Copy" Click="CopyDeviceId_Click" Style="{StaticResource ButtonStyle}" Padding="14,10" Margin="14,0,0,0" Height="46" VerticalAlignment="Top"/>
-                                    </Grid>
-                                </StackPanel>
-                            </Border>
-
-                            <Border Background="#FEF08A" Padding="28" CornerRadius="14" BorderBrush="#FCD34D" BorderThickness="1.5" Margin="0,0,0,20">
-                                <StackPanel>
-                                    <TextBlock Text="Recovery Code" FontWeight="Bold" Foreground="#78350F" FontSize="15" Margin="0,0,0,8"/>
-                                    <TextBlock Text="Store this safely. It grants full account access." FontSize="13" Foreground="#92400E" TextWrapping="Wrap" Margin="0,0,0,16"/>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBox x:Name="RecoveryCodeBox" Grid.Column="0" Style="{StaticResource TextBoxStyle}" IsReadOnly="True" FontFamily="Courier New" FontSize="11" Padding="13" Height="46"/>
-                                        <Button x:Name="ShowRecoveryBtn" Grid.Column="1" Content="Show" Click="ToggleRecoveryCode_Click" Style="{StaticResource ButtonStyle}" Padding="14,10" Margin="14,0,0,0" Height="46" VerticalAlignment="Top"/>
-                                    </Grid>
-                                </StackPanel>
-                            </Border>
-
-                            <Border Background="White" Padding="28" CornerRadius="14" BorderBrush="#E5E7EB" BorderThickness="1.5" Margin="0,0,0,20">
-                                <StackPanel>
-                                    <TextBlock Text="Security" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}" FontSize="15" Margin="0,0,0,16"/>
-                                    <StackPanel Margin="0,0,0,12">
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                                            <TextBlock Text="??" FontSize="16" Margin="0,0,10,0"/>
-                                            <TextBlock Text="AES-256-GCM military-grade encryption" Foreground="{StaticResource TextMedBrush}" FontSize="13" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                                            <TextBlock Text="??" FontSize="16" Margin="0,0,10,0"/>
-                                            <TextBlock Text="Immutable event-sourced history" Foreground="{StaticResource TextMedBrush}" FontSize="13" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                                            <TextBlock Text="??" FontSize="16" Margin="0,0,10,0"/>
-                                            <TextBlock Text="Works offline, no cloud sync" Foreground="{StaticResource TextMedBrush}" FontSize="13" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="??" FontSize="16" Margin="0,0,10,0"/>
-                                            <TextBlock Text="Your device is the source of truth" Foreground="{StaticResource TextMedBrush}" FontSize="13" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Border>
-
-                            <Border Background="White" Padding="28" CornerRadius="14" BorderBrush="#E5E7EB" BorderThickness="1.5">
-                                <StackPanel>
-                                    <TextBlock Text="About" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}" FontSize="15" Margin="0,0,0,12"/>
-                                    <TextBlock Text="Lullaby v1.0" Foreground="{StaticResource TextMedBrush}" FontSize="13" Margin="0,0,0,4"/>
-                                    <TextBlock Text="A privacy-first mental health companion designed for your wellbeing" Foreground="{StaticResource TextMedBrush}" FontSize="13" TextWrapping="Wrap"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabItem>
-            </TabControl>
+                </Border>
+            </Grid>
         </Border>
-    </DockPanel>
+    </Grid>
 </Window>

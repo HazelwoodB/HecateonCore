@@ -20,10 +20,10 @@ public class ChatMessage
 
 public partial class MainWindow : Window
 {
-    private ObservableCollection<ChatMessage> _chatMessages = new();
-    private bool _isWaitingForResponse = false;
-    private string _deviceId = Guid.NewGuid().ToString().Substring(0, 12);
-    private int _selectedMood = 0;
+    private readonly ObservableCollection<ChatMessage> _chatMessages = new();
+    private bool _isWaitingForResponse;
+    private readonly string _deviceId = Guid.NewGuid().ToString()[..12];
+    private int _selectedMood;
     private HttpClient? _httpClient;
 
     public MainWindow()
@@ -51,14 +51,18 @@ public partial class MainWindow : Window
         SleepSlider.ValueChanged += SleepSlider_ValueChanged;
         MessagesList.ItemsSource = _chatMessages;
 
+        _httpClient.DefaultRequestHeaders.Remove("X-Device-Id");
+        _httpClient.DefaultRequestHeaders.Add("X-Device-Id", _deviceId);
+
         LoadDemoChat();
+        UpdateMoodSelectionVisuals();
     }
 
     private void ChatInput_KeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Return && Keyboard.Modifiers == ModifierKeys.Control)
         {
-            SendMessage_Click(null, null);
+            SendMessage_Click(this, new RoutedEventArgs());
             e.Handled = true;
         }
     }
@@ -102,6 +106,7 @@ public partial class MainWindow : Window
 
     private async void SendMessage_Click(object sender, RoutedEventArgs e)
     {
+        ErrorBanner.Visibility = Visibility.Collapsed;
         var message = ChatInput.Text.Trim();
         if (string.IsNullOrWhiteSpace(message) || _isWaitingForResponse)
             return;
@@ -155,6 +160,33 @@ public partial class MainWindow : Window
             _selectedMood = mood;
             var labels = new[] { "", "😢 Awful", "😞 Bad", "😐 Okay", "😌 Good", "😊 Great" };
             MoodLabel.Text = labels[mood];
+            UpdateMoodSelectionVisuals();
+        }
+    }
+
+    private void UpdateMoodSelectionVisuals()
+    {
+        foreach (var child in MoodButtonPanel.Children)
+        {
+            if (child is not Button button || !int.TryParse(button.Tag?.ToString(), out var mood))
+            {
+                continue;
+            }
+
+            if (mood == _selectedMood)
+            {
+                button.Background = new SolidColorBrush(Color.FromRgb(59, 43, 74));
+                button.BorderBrush = new SolidColorBrush(Color.FromRgb(231, 197, 138));
+                button.Foreground = new SolidColorBrush(Color.FromRgb(243, 228, 203));
+                button.BorderThickness = new Thickness(2);
+            }
+            else
+            {
+                button.Background = new SolidColorBrush(Color.FromRgb(43, 31, 56));
+                button.BorderBrush = new SolidColorBrush(Color.FromRgb(106, 77, 49));
+                button.Foreground = new SolidColorBrush(Color.FromRgb(231, 197, 138));
+                button.BorderThickness = new Thickness(1);
+            }
         }
     }
 
@@ -181,6 +213,11 @@ public partial class MainWindow : Window
             {
                 HealthStatus.Text = $"✓ {MoodLabel.Text} • 🛏️ {SleepSlider.Value:F1}h";
                 MessageBox.Show("✓ Saved!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                ErrorBanner.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ShowError($"Health log failed: {response.StatusCode}");
             }
         }
         catch (Exception ex)
