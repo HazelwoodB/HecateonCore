@@ -24,12 +24,22 @@ public class ChatDbContext(DbContextOptions<ChatDbContext> options) : DbContext(
                 .HasMaxLength(50);
 
             entity.Property(e => e.Message)
-                .IsRequired()
-                .HasColumnType("nvarchar(max)");
+                .IsRequired();
 
-            entity.Property(e => e.Timestamp)
-                .IsRequired()
-                .HasDefaultValueSql("GETUTCDATE()");
+            var timestampProperty = entity.Property(e => e.Timestamp)
+                .IsRequired();
+
+            if (Database.IsSqlServer())
+            {
+                entity.Property(e => e.Message)
+                    .HasColumnType("nvarchar(max)");
+
+                timestampProperty.HasDefaultValueSql("GETUTCDATE()");
+            }
+            else if (Database.IsSqlite())
+            {
+                timestampProperty.HasDefaultValueSql("CURRENT_TIMESTAMP");
+            }
 
             entity.Property(e => e.Sentiment)
                 .HasMaxLength(50);

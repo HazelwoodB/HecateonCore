@@ -16,7 +16,7 @@ public static class DatabaseExtensions
 
         try
         {
-            if (dbContext.Database.IsRelational())
+            if (dbContext.Database.ProviderName?.Contains("SqlServer", StringComparison.OrdinalIgnoreCase) == true)
             {
                 await dbContext.Database.MigrateAsync();
             }
@@ -42,7 +42,7 @@ public static class DatabaseExtensions
 
         try
         {
-            if (dbContext.Database.IsRelational())
+            if (dbContext.Database.ProviderName?.Contains("SqlServer", StringComparison.OrdinalIgnoreCase) == true)
             {
                 dbContext.Database.Migrate();
             }

@@ -22,6 +22,11 @@ public partial class Program
         // Add database context
         var useInMemoryDb = IsTruthy(Environment.GetEnvironmentVariable("HECATEON_USE_INMEMORY_DB"))
                             || builder.Configuration.GetValue<bool>("Hecateon:UseInMemoryDb");
+        var configuredProvider = Environment.GetEnvironmentVariable("HECATEON_DB_PROVIDER")
+                                 ?? builder.Configuration["Hecateon:DatabaseProvider"];
+        var databaseProvider = string.IsNullOrWhiteSpace(configuredProvider)
+            ? "sqlite"
+            : configuredProvider.Trim().ToLowerInvariant();
 
         if (useInMemoryDb)
         {
@@ -29,10 +34,19 @@ public partial class Program
                 options.UseInMemoryDatabase("HecateonChatDb"));
             Console.WriteLine("[DB] Using in-memory database mode (HECATEON_USE_INMEMORY_DB).");
         }
-        else
+        else if (databaseProvider == "sqlserver")
         {
             builder.Services.AddDbContext<ChatDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ChatDb")));
+            Console.WriteLine("[DB] Using SQL Server provider.");
+        }
+        else
+        {
+            var sqliteConnectionString = builder.Configuration.GetConnectionString("ChatDbSqlite")
+                                         ?? "Data Source=App_Data/hecateon-chat.db";
+            builder.Services.AddDbContext<ChatDbContext>(options =>
+                options.UseSqlite(sqliteConnectionString));
+            Console.WriteLine($"[DB] Using SQLite provider ({sqliteConnectionString}).");
         }
 
         // Register Hecateon Core services
