@@ -1,0 +1,13 @@
+{
+  "repoUrl": "https://github.com/HazelwoodB/HecateonCore.git",
+  "repoBranch": "main",
+  "serverUrl": "https://localhost:5001",
+  "enableAutoUpdate": true,
+  "enableValidation": true,
+  "enableAiWarmup": true,
+  "enableDesktopPublish": true,
+  "useInMemoryDbForBootstrap": true,
+  "recoveryCode": "",
+  "disableInPlaceDashboard": false,
+  "serverWaitSeconds": 40
+}

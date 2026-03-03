@@ -16,8 +16,14 @@ public static class DatabaseExtensions
 
         try
         {
-            // Apply any pending migrations
-            await dbContext.Database.MigrateAsync();
+            if (dbContext.Database.IsRelational())
+            {
+                await dbContext.Database.MigrateAsync();
+            }
+            else
+            {
+                await dbContext.Database.EnsureCreatedAsync();
+            }
         }
         catch (Exception ex)
         {
@@ -36,8 +42,14 @@ public static class DatabaseExtensions
 
         try
         {
-            // Apply any pending migrations
-            dbContext.Database.Migrate();
+            if (dbContext.Database.IsRelational())
+            {
+                dbContext.Database.Migrate();
+            }
+            else
+            {
+                dbContext.Database.EnsureCreated();
+            }
         }
         catch (Exception ex)
         {
