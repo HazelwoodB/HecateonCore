@@ -48,7 +48,7 @@ if (-not (Test-Path $gitPath)) {
     }
 }
 
-$launcherPath = Join-Path $resolvedInstallPath "RUN_LULLABY_DESKTOP_BATCH.cmd"
+$launcherPath = Join-Path $resolvedInstallPath "RUN_HECATEON_DESKTOP.cmd"
 if (-not (Test-Path $launcherPath)) {
     throw "Launcher not found at $launcherPath"
 }

@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace Lullaby.Desktop;
+namespace Hecateon.Desktop;
 
 /// <summary>
 /// Interaction logic for App.xaml

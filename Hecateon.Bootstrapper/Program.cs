@@ -454,13 +454,14 @@ internal sealed class BootstrapRunner
     {
         var candidateNames = new[]
         {
+            "Hecateon.Desktop.exe",
             "Lullaby.Desktop.exe",
             "Lullaby.exe"
         };
 
         var publishDir = Path.Combine(
             _config.RepoRoot,
-            "Lullaby.Desktop",
+            "Hecateon.Desktop",
             "bin",
             "Release",
             "net8.0-windows",
@@ -777,7 +778,7 @@ internal sealed class BootstrapConfig
             ServerWaitSeconds = serverWaitSeconds,
             SolutionPath = Path.Combine(repoRoot, "Lullaby.slnx"),
             ServerProjectPath = Path.Combine(repoRoot, "Lullaby", "Lullaby", "Lullaby.csproj"),
-            DesktopProjectPath = Path.Combine(repoRoot, "Lullaby.Desktop", "Lullaby.Desktop.csproj"),
+            DesktopProjectPath = Path.Combine(repoRoot, "Hecateon.Desktop", "Hecateon.Desktop.csproj"),
             TestProjectPath = Path.Combine(repoRoot, "Lullaby", "Lullaby.Tests", "Lullaby.Tests.csproj")
         };
     }

@@ -1,11 +1,11 @@
-# 🎉 Lullaby Desktop Application
+# Hecateon Desktop
 
-Welcome! You now have a professional **WPF Desktop Application** for Lullaby instead of the browser-based Blazor interface.
+Hecateon Desktop is the local operator interface for the Hecateon platform.
 
 ## What's New
 
 ✅ **Native Windows Desktop Application** - Fast, responsive, no browser dependency  
-✅ **Three Main Tabs** - Chat, Health & Mood Tracking, Settings  
+✅ **Operator Surface** - Operator Console, Command Overview, Chronicle, Projection, System Configuration  
 ✅ **Secure Backend** - ASP.NET Core running locally on `https://localhost:5001`  
 ✅ **Professional UI** - Clean, modern interface with proper styling  
 ✅ **Offline-Capable** - Works without internet, syncs when connected  
@@ -15,12 +15,12 @@ Welcome! You now have a professional **WPF Desktop Application** for Lullaby ins
 
 ### Option 1: Batch Script (Windows)
 ```batch
-RUN_LULLABY_DESKTOP.cmd
+RUN_HECATEON_DESKTOP.cmd
 ```
 
 ### Option 2: PowerShell Script
 ```powershell
-.\RUN_LULLABY_DESKTOP.ps1
+.\RUN_HECATEON_DESKTOP.cmd
 ```
 
 ### Option 3: Manual Start
@@ -62,7 +62,7 @@ dotnet run
 
 ```
 ┌─────────────────────────────────────────────────┐
-│   Lullaby.Desktop (WPF)                        │
+│   Hecateon.Desktop (WPF)                       │
 │   ├─ MainWindow.xaml (UI Layout)               │
 │   ├─ MainWindow.xaml.cs (Chat, Health logic)   │
 │   └─ HttpClient (API Communication)            │
@@ -70,7 +70,7 @@ dotnet run
                    │ HTTPS (localhost:5001)
                    ▼
 ┌─────────────────────────────────────────────────┐
-│   Lullaby Backend (ASP.NET Core)               │
+│   Hecateon Core Runtime (ASP.NET Core)         │
 │   ├─ /api/chat - Send chat messages            │
 │   ├─ /api/history - Fetch message history      │
 │   ├─ /api/health/log - Log health entries      │
@@ -125,7 +125,7 @@ app.Urls.Add("https://localhost:5002"); // Change to different port
 
 ### Project Structure
 ```
-Lullaby/
+HecateonCore/
 ├── Lullaby/                    # Backend (ASP.NET Core 10)
 │   ├── Program.cs             # Startup, API routes
 │   ├── Core/                  # Encryption, event store, device registry
@@ -134,7 +134,7 @@ Lullaby/
 │
 ├── Lullaby.Client/            # Blazor WASM (deprecated, kept for reference)
 │
-└── Lullaby.Desktop/           # Desktop App (WPF, .NET 8)
+└── Hecateon.Desktop/          # Desktop App (WPF, .NET 8)
     ├── MainWindow.xaml        # UI Layout
     ├── MainWindow.xaml.cs     # Code-behind logic
     └── Lullaby.Desktop.csproj # Project file
@@ -205,8 +205,8 @@ For issues or questions about the desktop implementation:
 ## License
 
 This project is part of Lullaby - Mental Health Companion.  
-Designed with privacy-first, safety-first, local-first principles.
+Designed with local-first, deterministic, safety-bounded principles.
 
 ---
 
-**Ready to use!** Run `RUN_LULLABY_DESKTOP.cmd` or `RUN_LULLABY_DESKTOP.ps1` to start.
+**Ready to use!** Run `RUN_HECATEON_DESKTOP.cmd` to start.

@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace Lullaby.Desktop;
+namespace Hecateon.Desktop;
 
 public class ChatMessage
 {
@@ -77,7 +77,7 @@ public partial class MainWindow : Window
         _chatMessages.Clear();
         _chatMessages.Add(new ChatMessage 
         { 
-            Text = "👋 Welcome to Lullaby! I'm your mental health companion.",
+            Text = "Welcome to Hecateon. Local-first deterministic monitoring is active.",
             IsUser = false,
             Timestamp = DateTime.Now.AddMinutes(-3)
         });
@@ -89,7 +89,7 @@ public partial class MainWindow : Window
         });
         _chatMessages.Add(new ChatMessage
         {
-            Text = "Chat anytime, track mood & sleep. Everything is private and secure.",
+            Text = "All processing occurs on-device with append-only encrypted state.",
             IsUser = false,
             Timestamp = DateTime.Now.AddMinutes(-1)
         });

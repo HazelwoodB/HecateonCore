@@ -13,7 +13,7 @@ The bootstrapper provides one executable that runs this pipeline:
 ## Run via batch entrypoint
 
 ```bat
-RUN_LULLABY_DESKTOP_BATCH.cmd
+RUN_HECATEON_DESKTOP.cmd
 ```
 
 ## Install to stable folder (recommended)
@@ -32,22 +32,22 @@ INSTALL_HECATEON_STABLE.cmd -InstallPath "D:\Apps\HecateonCore"
 
 This script clones/updates into a persistent folder, then creates a desktop shortcut (`Hecateon Launcher.lnk`) that runs:
 
-- `RUN_LULLABY_DESKTOP_BATCH.cmd main popup`
+- `RUN_HECATEON_DESKTOP.cmd main popup`
 
 Optional profile argument:
 
 ```bat
-RUN_LULLABY_DESKTOP_BATCH.cmd main
-RUN_LULLABY_DESKTOP_BATCH.cmd dev
-RUN_LULLABY_DESKTOP_BATCH.cmd offline
-RUN_LULLABY_DESKTOP_BATCH.cmd --help
+RUN_HECATEON_DESKTOP.cmd main
+RUN_HECATEON_DESKTOP.cmd dev
+RUN_HECATEON_DESKTOP.cmd offline
+RUN_HECATEON_DESKTOP.cmd --help
 ```
 
 Optional terminal mode argument:
 
 ```bat
-RUN_LULLABY_DESKTOP_BATCH.cmd main popup
-RUN_LULLABY_DESKTOP_BATCH.cmd main inline
+RUN_HECATEON_DESKTOP.cmd main popup
+RUN_HECATEON_DESKTOP.cmd main inline
 ```
 
 - `popup`: opens a post-load status popup only when bootstrap succeeds
@@ -61,7 +61,7 @@ Profile behavior:
 
 Batch entrypoint notes:
 
-- `RUN_LULLABY_DESKTOP_BATCH.cmd` republishes the bootstrapper EXE only when launcher sources are newer (or EXE is missing), reducing startup lag.
+- `RUN_HECATEON_DESKTOP.cmd` republishes the bootstrapper EXE only when launcher sources are newer (or EXE is missing), reducing startup lag.
 - Default mode is `popup`, which opens a dedicated terminal window for runtime visualization.
 - Bootstrapper now prints a live status matrix for each stage (`Dependencies`, `Repository`, `Validation`, `Server`, `AI Warmup`, `Publish`, `Launch`).
 - Matrix statuses are colorized when terminal supports ANSI: `PASS` (green), `RUNNING/SKIPPED` (yellow), `FAIL` (red), `PENDING` (dim gray).
