@@ -237,6 +237,7 @@ internal sealed class BootstrapRunner
         }
 
         WriteInfo("Running pretesting + testing");
+        await StopLingeringAppProcessesAsync();
 
         if (await RunProcessAsync("dotnet", $"restore \"{_config.SolutionPath}\"", _config.RepoRoot, throwOnError: false) is { ExitCode: not 0 })
         {
@@ -266,6 +267,29 @@ internal sealed class BootstrapRunner
 
         WriteSuccess("Validation passed.");
         return true;
+    }
+
+    private Task StopLingeringAppProcessesAsync()
+    {
+        foreach (var processName in new[] { "Lullaby", "Lullaby.Desktop" })
+        {
+            try
+            {
+                var processes = Process.GetProcessesByName(processName);
+                foreach (var process in processes)
+                {
+                    WriteWarning($"Stopping stale process {process.ProcessName} ({process.Id}) before validation.");
+                    process.Kill(entireProcessTree: true);
+                    process.WaitForExit(5000);
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteWarning($"Could not stop process '{processName}': {ex.Message}");
+            }
+        }
+
+        return Task.CompletedTask;
     }
 
     private async Task<Process?> StartServerAsync()

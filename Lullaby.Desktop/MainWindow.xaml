@@ -31,6 +31,7 @@
         
         <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
         <SolidColorBrush x:Key="PrimaryLightBrush" Color="{StaticResource PrimaryLight}"/>
+        <SolidColorBrush x:Key="PrimaryDarkBrush" Color="{StaticResource PrimaryDark}"/>
         <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource Success}"/>
         <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource Surface}"/>
         <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
@@ -40,7 +41,7 @@
 
         <Style x:Key="TabItemStyle" TargetType="TabItem">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource TextMed}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMedBrush}"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Height" Value="50"/>
             <Setter Property="Template">
@@ -83,10 +84,10 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource PrimaryLight}"/>
+                    <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{StaticResource PrimaryDark}"/>
+                    <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -95,8 +96,8 @@
             <Setter Property="Padding" Value="13"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource TextDark}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDarkBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
             <Setter Property="BorderThickness" Value="1.5"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -148,14 +149,14 @@
                                             <Border Background="{StaticResource PrimaryBrush}" Padding="16,12" CornerRadius="18,18,6,18">
                                                 <TextBlock Text="{Binding Text}" Foreground="White" TextWrapping="Wrap" FontSize="13" LineHeight="20"/>
                                             </Border>
-                                            <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" Foreground="{StaticResource TextLight}" FontSize="11" Margin="0,8,0,0" TextAlignment="Right"/>
+                                            <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" Foreground="{StaticResource TextLightBrush}" FontSize="11" Margin="0,8,0,0" TextAlignment="Right"/>
                                         </StackPanel>
 
                                         <StackPanel HorizontalAlignment="Left" Visibility="{Binding IsAssistantVisibility}" Margin="0,0,100,0" MaxWidth="550">
                                             <Border Background="White" Padding="16,12" CornerRadius="18,18,18,6" BorderBrush="#E5E7EB" BorderThickness="1">
-                                                <TextBlock Text="{Binding Text}" Foreground="{StaticResource TextDark}" TextWrapping="Wrap" FontSize="13" LineHeight="20"/>
+                                                <TextBlock Text="{Binding Text}" Foreground="{StaticResource TextDarkBrush}" TextWrapping="Wrap" FontSize="13" LineHeight="20"/>
                                             </Border>
-                                            <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" Foreground="{StaticResource TextLight}" FontSize="11" Margin="0,8,0,0"/>
+                                            <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" Foreground="{StaticResource TextLightBrush}" FontSize="11" Margin="0,8,0,0"/>
                                         </StackPanel>
                                     </Grid>
                                 </DataTemplate>
@@ -188,13 +189,13 @@
                     <ScrollViewer Background="White" Padding="32">
                         <StackPanel MaxWidth="680">
                             <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="Daily Check-In" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextDark}"/>
-                                <TextBlock Text="Track your wellbeing to discover patterns" Foreground="{StaticResource TextMed}" FontSize="14" Margin="0,5,0,0"/>
+                                <TextBlock Text="Daily Check-In" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}"/>
+                                <TextBlock Text="Track your wellbeing to discover patterns" Foreground="{StaticResource TextMedBrush}" FontSize="14" Margin="0,5,0,0"/>
                             </StackPanel>
 
                             <Border Background="White" Padding="28" CornerRadius="14" BorderBrush="#E5E7EB" BorderThickness="1.5" Margin="0,20,0,20">
                                 <StackPanel>
-                                    <TextBlock Text="What's your mood today?" FontWeight="Bold" Foreground="{StaticResource TextDark}" FontSize="16" Margin="0,0,0,18"/>
+                                    <TextBlock Text="What's your mood today?" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}" FontSize="16" Margin="0,0,0,18"/>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,18">
                                         <Button Content="??&#10;Great" Tag="5" Click="MoodButton_Click" Style="{StaticResource ButtonStyle}" Width="100" Height="100" Padding="8" FontSize="14" Margin="0,0,12,0"/>
                                         <Button Content="??&#10;Good" Tag="4" Click="MoodButton_Click" Style="{StaticResource ButtonStyle}" Width="100" Height="100" Padding="8" FontSize="14" Margin="0,0,12,0"/>
@@ -202,13 +203,13 @@
                                         <Button Content="??&#10;Bad" Tag="2" Click="MoodButton_Click" Style="{StaticResource ButtonStyle}" Width="100" Height="100" Padding="8" FontSize="14" Margin="0,0,12,0"/>
                                         <Button Content="??&#10;Awful" Tag="1" Click="MoodButton_Click" Style="{StaticResource ButtonStyle}" Width="100" Height="100" Padding="8" FontSize="14"/>
                                     </StackPanel>
-                                    <TextBlock x:Name="MoodLabel" Text="Select your mood to continue" Foreground="{StaticResource TextMed}" FontSize="13" TextAlignment="Center" Margin="0,6,0,0"/>
+                                    <TextBlock x:Name="MoodLabel" Text="Select your mood to continue" Foreground="{StaticResource TextMedBrush}" FontSize="13" TextAlignment="Center" Margin="0,6,0,0"/>
                                 </StackPanel>
                             </Border>
 
                             <Border Background="White" Padding="28" CornerRadius="14" BorderBrush="#E5E7EB" BorderThickness="1.5" Margin="0,0,0,20">
                                 <StackPanel>
-                                    <TextBlock Text="How much sleep did you get?" FontWeight="Bold" Foreground="{StaticResource TextDark}" FontSize="16" Margin="0,0,0,18"/>
+                                    <TextBlock Text="How much sleep did you get?" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}" FontSize="16" Margin="0,0,0,18"/>
                                     <Slider x:Name="SleepSlider" Minimum="0" Maximum="12" SmallChange="0.25" LargeChange="1" Value="8" Height="6" Margin="0,0,0,14"/>
                                     <TextBlock x:Name="SleepLabel" Text="8.0 hours" Foreground="{StaticResource PrimaryBrush}" FontWeight="Bold" FontSize="18" TextAlignment="Center"/>
                                 </StackPanel>
@@ -230,13 +231,13 @@
                     <ScrollViewer Background="White" Padding="32">
                         <StackPanel MaxWidth="680">
                             <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="Settings" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextDark}"/>
-                                <TextBlock Text="Manage your account and privacy" Foreground="{StaticResource TextMed}" FontSize="14" Margin="0,5,0,0"/>
+                                <TextBlock Text="Settings" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}"/>
+                                <TextBlock Text="Manage your account and privacy" Foreground="{StaticResource TextMedBrush}" FontSize="14" Margin="0,5,0,0"/>
                             </StackPanel>
 
                             <Border Background="White" Padding="28" CornerRadius="14" BorderBrush="#E5E7EB" BorderThickness="1.5" Margin="0,20,0,20">
                                 <StackPanel>
-                                    <TextBlock Text="Device ID" FontWeight="Bold" Foreground="{StaticResource TextDark}" FontSize="15" Margin="0,0,0,16"/>
+                                    <TextBlock Text="Device ID" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}" FontSize="15" Margin="0,0,0,16"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -265,23 +266,23 @@
 
                             <Border Background="White" Padding="28" CornerRadius="14" BorderBrush="#E5E7EB" BorderThickness="1.5" Margin="0,0,0,20">
                                 <StackPanel>
-                                    <TextBlock Text="Security" FontWeight="Bold" Foreground="{StaticResource TextDark}" FontSize="15" Margin="0,0,0,16"/>
+                                    <TextBlock Text="Security" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}" FontSize="15" Margin="0,0,0,16"/>
                                     <StackPanel Margin="0,0,0,12">
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                             <TextBlock Text="??" FontSize="16" Margin="0,0,10,0"/>
-                                            <TextBlock Text="AES-256-GCM military-grade encryption" Foreground="{StaticResource TextMed}" FontSize="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="AES-256-GCM military-grade encryption" Foreground="{StaticResource TextMedBrush}" FontSize="13" VerticalAlignment="Center"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                             <TextBlock Text="??" FontSize="16" Margin="0,0,10,0"/>
-                                            <TextBlock Text="Immutable event-sourced history" Foreground="{StaticResource TextMed}" FontSize="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Immutable event-sourced history" Foreground="{StaticResource TextMedBrush}" FontSize="13" VerticalAlignment="Center"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                             <TextBlock Text="??" FontSize="16" Margin="0,0,10,0"/>
-                                            <TextBlock Text="Works offline, no cloud sync" Foreground="{StaticResource TextMed}" FontSize="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Works offline, no cloud sync" Foreground="{StaticResource TextMedBrush}" FontSize="13" VerticalAlignment="Center"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="??" FontSize="16" Margin="0,0,10,0"/>
-                                            <TextBlock Text="Your device is the source of truth" Foreground="{StaticResource TextMed}" FontSize="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Your device is the source of truth" Foreground="{StaticResource TextMedBrush}" FontSize="13" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
@@ -289,9 +290,9 @@
 
                             <Border Background="White" Padding="28" CornerRadius="14" BorderBrush="#E5E7EB" BorderThickness="1.5">
                                 <StackPanel>
-                                    <TextBlock Text="About" FontWeight="Bold" Foreground="{StaticResource TextDark}" FontSize="15" Margin="0,0,0,12"/>
-                                    <TextBlock Text="Lullaby v1.0" Foreground="{StaticResource TextMed}" FontSize="13" Margin="0,0,0,4"/>
-                                    <TextBlock Text="A privacy-first mental health companion designed for your wellbeing" Foreground="{StaticResource TextMed}" FontSize="13" TextWrapping="Wrap"/>
+                                    <TextBlock Text="About" FontWeight="Bold" Foreground="{StaticResource TextDarkBrush}" FontSize="15" Margin="0,0,0,12"/>
+                                    <TextBlock Text="Lullaby v1.0" Foreground="{StaticResource TextMedBrush}" FontSize="13" Margin="0,0,0,4"/>
+                                    <TextBlock Text="A privacy-first mental health companion designed for your wellbeing" Foreground="{StaticResource TextMedBrush}" FontSize="13" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
