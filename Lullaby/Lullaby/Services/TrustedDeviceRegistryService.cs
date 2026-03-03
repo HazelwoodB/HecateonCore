@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
-using Lullaby.Models;
+using Hecateon.Models;
 
-namespace Lullaby.Services;
+namespace Hecateon.Services;
 
 /// <summary>
 /// File-backed trusted device registry with explicit approve/revoke controls.

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Lullaby.Data;
+using Hecateon.Data;
 
 #nullable disable
 
-namespace Lullaby.Data.Migrations
+namespace Hecateon.Data.Migrations
 {
     [DbContext(typeof(ChatDbContext))]
     [Migration("20260210000000_InitialCreate")]

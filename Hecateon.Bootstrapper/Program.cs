@@ -271,7 +271,7 @@ internal sealed class BootstrapRunner
 
     private Task StopLingeringAppProcessesAsync()
     {
-        foreach (var processName in new[] { "Lullaby", "Lullaby.Desktop" })
+        foreach (var processName in new[] { "Lullaby", "Hecateon.Desktop" })
         {
             try
             {

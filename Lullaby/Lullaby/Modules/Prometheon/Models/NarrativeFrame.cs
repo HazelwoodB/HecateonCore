@@ -1,6 +1,6 @@
 using System;
 
-namespace Lullaby.Modules.Prometheon.Models
+namespace Hecateon.Modules.Prometheon.Models
 {
     /// <summary>
     /// Cognitive reframing technique type.

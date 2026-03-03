@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Lullaby.Data.Migrations
+namespace Hecateon.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

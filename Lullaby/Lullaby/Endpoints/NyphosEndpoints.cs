@@ -1,15 +1,15 @@
 using Hecateon.Modules.Nyphos.Services;
-using Lullaby.Models.Api.Endpoints;
-using Lullaby.Services;
+using Hecateon.Models.Api.Endpoints;
+using Hecateon.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Lullaby.Endpoints;
+namespace Hecateon.Endpoints;
 
 public static class NyphosEndpoints
 {
     public static void MapNyphosEndpoints(this WebApplication app)
     {
-        app.MapGet("/api/nyphos/assessment", async ([FromServices] Lullaby.Services.NyphosRiskEngine riskEngine, CancellationToken cancellationToken, [FromQuery] int days = 7) =>
+        app.MapGet("/api/nyphos/assessment", async ([FromServices] Hecateon.Services.NyphosRiskEngine riskEngine, CancellationToken cancellationToken, [FromQuery] int days = 7) =>
         {
             try
             {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Lullaby.Modules.Prometheon.Models
+namespace Hecateon.Modules.Prometheon.Models
 {
     /// <summary>
     /// Outcome of a simulated decision path.

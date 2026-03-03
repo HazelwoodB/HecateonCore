@@ -1,6 +1,6 @@
 using System;
 
-namespace Lullaby.Modules.Prometheon.Models
+namespace Hecateon.Modules.Prometheon.Models
 {
     /// <summary>
     /// Types of transactional patterns in Transactional Analysis.

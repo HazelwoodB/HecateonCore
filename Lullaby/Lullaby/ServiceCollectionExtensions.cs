@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
-using Lullaby.Data;
+using Hecateon.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Lullaby;
+namespace Hecateon;
 
 public static class ServiceCollectionExtensions
 {

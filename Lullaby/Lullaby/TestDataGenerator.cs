@@ -1,7 +1,7 @@
-using Lullaby.Models;
-using Lullaby.Services;
+using Hecateon.Models;
+using Hecateon.Services;
 
-namespace Lullaby;
+namespace Hecateon;
 
 /// <summary>
 /// Test data generator for Nyphos system testing

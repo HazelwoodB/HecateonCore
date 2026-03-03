@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
-using Lullaby.Models;
+using Hecateon.Models;
 
-namespace Lullaby.Services;
+namespace Hecateon.Services;
 
 /// <summary>
 /// Append-only event log (JSONL) used as canonical server event source.

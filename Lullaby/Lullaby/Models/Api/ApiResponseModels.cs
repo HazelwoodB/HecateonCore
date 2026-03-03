@@ -1,4 +1,4 @@
-namespace Lullaby.Models.Api;
+namespace Hecateon.Models.Api;
 
 /// <summary>
 /// Standard API response envelope for consistent response structure.

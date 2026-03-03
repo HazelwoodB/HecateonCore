@@ -1,9 +1,9 @@
-using Lullaby.Data;
-using Lullaby.Models;
+using Hecateon.Data;
+using Hecateon.Models;
 using System.Collections.Concurrent;
 using Microsoft.EntityFrameworkCore;
 
-namespace Lullaby.Services;
+namespace Hecateon.Services;
 
 public class ChatLogService(ChatDbContext dbContext)
 {

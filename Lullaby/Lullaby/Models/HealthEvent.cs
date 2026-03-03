@@ -1,4 +1,4 @@
-namespace Lullaby.Models;
+namespace Hecateon.Models;
 
 /// <summary>
 /// Health event types for sleep, mood, and routine tracking

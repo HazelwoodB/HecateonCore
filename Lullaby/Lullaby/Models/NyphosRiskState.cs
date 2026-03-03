@@ -1,4 +1,4 @@
-namespace Lullaby.Models;
+namespace Hecateon.Models;
 
 /// <summary>
 /// Nyphos risk state model with hysteresis and explainable transitions

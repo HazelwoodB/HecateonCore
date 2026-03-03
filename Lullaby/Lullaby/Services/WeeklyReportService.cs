@@ -1,8 +1,8 @@
 using System.Text;
 using System.Text.Json;
-using Lullaby.Models;
+using Hecateon.Models;
 
-namespace Lullaby.Services;
+namespace Hecateon.Services;
 
 /// <summary>
 /// Service for generating weekly wellness reports for clinicians

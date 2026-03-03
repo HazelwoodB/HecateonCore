@@ -1,5 +1,5 @@
-using Lullaby.Client.Services;
-using Lullaby.Client.Services.Foundation;
+using Hecateon.Client.Services;
+using Hecateon.Client.Services.Foundation;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

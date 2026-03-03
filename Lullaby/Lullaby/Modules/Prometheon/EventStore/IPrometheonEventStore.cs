@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Lullaby.Modules.Prometheon.Models;
+using Hecateon.Modules.Prometheon.Models;
 
-namespace Lullaby.Modules.Prometheon.EventStore
+namespace Hecateon.Modules.Prometheon.EventStore
 {
     /// <summary>
     /// Append-only event store for Prometheon cognitive events.

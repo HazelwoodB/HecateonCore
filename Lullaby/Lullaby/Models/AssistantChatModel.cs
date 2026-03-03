@@ -1,9 +1,9 @@
-using Lullaby.Services;
+using Hecateon.Services;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Lullaby.Models;
+namespace Hecateon.Models;
 
 /// <summary>
 /// Comprehensive assistant chat model that orchestrates all LLM and ML capabilities.

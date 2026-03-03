@@ -5,8 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
-    <RootNamespace>Lullaby</RootNamespace>
-    <AssemblyName>Lullaby</AssemblyName>
+    <RootNamespace>Hecateon</RootNamespace>
+    <AssemblyName>Hecateon</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-namespace Lullaby.Client;
+namespace Hecateon.Client;
 
 public class ChatMessage
 {

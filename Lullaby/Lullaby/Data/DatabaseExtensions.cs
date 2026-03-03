@@ -1,7 +1,7 @@
-using Lullaby.Data;
+using Hecateon.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Lullaby.Data;
+namespace Hecateon.Data;
 
 public static class DatabaseExtensions
 {

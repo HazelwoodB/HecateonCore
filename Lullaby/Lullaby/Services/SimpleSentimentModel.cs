@@ -1,6 +1,6 @@
 using Microsoft.ML;
 
-namespace Lullaby.Services;
+namespace Hecateon.Services;
 
 public record SentimentResult(string Label, float Score);
 

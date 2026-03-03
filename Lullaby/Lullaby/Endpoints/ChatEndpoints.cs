@@ -1,8 +1,8 @@
-using Lullaby.Models;
-using Lullaby.Services;
+using Hecateon.Models;
+using Hecateon.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Lullaby.Endpoints;
+namespace Hecateon.Endpoints;
 
 public static class ChatEndpoints
 {

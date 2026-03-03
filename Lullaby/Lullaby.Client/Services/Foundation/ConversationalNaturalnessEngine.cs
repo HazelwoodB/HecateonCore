@@ -1,4 +1,4 @@
-namespace Lullaby.Client.Services.Foundation;
+namespace Hecateon.Client.Services.Foundation;
 
 /// <summary>
 /// Conversational Naturalness Engine - Makes ARIA sound genuinely human

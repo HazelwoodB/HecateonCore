@@ -1,9 +1,9 @@
-using Lullaby.Models;
-using Lullaby.Models.Api.Endpoints;
-using Lullaby.Services;
+using Hecateon.Models;
+using Hecateon.Models.Api.Endpoints;
+using Hecateon.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Lullaby.Endpoints;
+namespace Hecateon.Endpoints;
 
 public static class HealthEndpoints
 {

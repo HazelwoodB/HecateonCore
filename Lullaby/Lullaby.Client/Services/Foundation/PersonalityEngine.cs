@@ -1,7 +1,7 @@
 using System.Text;
-using Lullaby.Client.Services;
+using Hecateon.Client.Services;
 
-namespace Lullaby.Client.Services.Foundation;
+namespace Hecateon.Client.Services.Foundation;
 
 /// <summary>
 /// Adaptive Personality Engine - Dynamically adjusts ARIA's communication style

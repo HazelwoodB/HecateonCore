@@ -1,4 +1,4 @@
-namespace Lullaby.Models.Api.Endpoints;
+namespace Hecateon.Models.Api.Endpoints;
 
 public record EnrollDeviceRequest(string DeviceId, string? DisplayName);
 public record ApproveDeviceRequest(string DeviceId, string[] Scopes);

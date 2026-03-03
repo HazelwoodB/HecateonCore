@@ -1,9 +1,9 @@
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using Lullaby.Client;
+using Hecateon.Client;
 
-namespace Lullaby.Client.Services;
+namespace Hecateon.Client.Services;
 
 /// <summary>
 /// Client-side LLM service using Ollama local models.

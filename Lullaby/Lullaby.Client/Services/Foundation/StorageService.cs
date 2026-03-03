@@ -2,7 +2,7 @@ using Microsoft.JSInterop;
 using System.Collections.Concurrent;
 using System.Text.Json;
 
-namespace Lullaby.Client.Services.Foundation;
+namespace Hecateon.Client.Services.Foundation;
 
 /// <summary>
 /// Abstraction for local storage operations

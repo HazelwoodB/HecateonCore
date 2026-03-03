@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Lullaby.Modules.Prometheon.Models;
-using Lullaby.Modules.Prometheon.EventStore;
+using Hecateon.Modules.Prometheon.Models;
+using Hecateon.Modules.Prometheon.EventStore;
 
-namespace Lullaby.Modules.Prometheon.Services
+namespace Hecateon.Modules.Prometheon.Services
 {
     /// <summary>
     /// Foresight simulation service.

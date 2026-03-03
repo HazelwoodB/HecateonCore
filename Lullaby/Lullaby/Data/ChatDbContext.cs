@@ -1,7 +1,7 @@
-using Lullaby.Models;
+using Hecateon.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Lullaby.Data;
+namespace Hecateon.Data;
 
 public class ChatDbContext(DbContextOptions<ChatDbContext> options) : DbContext(options)
 {

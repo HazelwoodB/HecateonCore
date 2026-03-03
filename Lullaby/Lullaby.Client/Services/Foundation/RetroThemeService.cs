@@ -1,4 +1,4 @@
-namespace Lullaby.Client.Services.Foundation;
+namespace Hecateon.Client.Services.Foundation;
 
 /// <summary>
 /// Retro-Futuristic Theme Service - 1950s-inspired design system

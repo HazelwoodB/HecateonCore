@@ -1,6 +1,6 @@
-using Lullaby.Client.Services;
+using Hecateon.Client.Services;
 
-namespace Lullaby.Client.Services.Foundation;
+namespace Hecateon.Client.Services.Foundation;
 
 /// <summary>
 /// Enhanced emotion recognition beyond basic sentiment analysis

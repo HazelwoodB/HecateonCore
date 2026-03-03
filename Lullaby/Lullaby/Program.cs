@@ -1,12 +1,12 @@
-using Lullaby.Components;
-using Lullaby.Data;
-using Lullaby.Models;
-using Lullaby.Services;
+using Hecateon.Components;
+using Hecateon.Data;
+using Hecateon.Models;
+using Hecateon.Services;
 using Hecateon.Core.EventStore;
 using Hecateon.Core.DeviceRegistry;
 using Hecateon.Core.Security;
 using Hecateon.Modules.Nyphos.Services;
-using Lullaby.Endpoints;
+using Hecateon.Endpoints;
 using Microsoft.EntityFrameworkCore;
 
 public partial class Program
@@ -52,7 +52,7 @@ public partial class Program
         builder.Services.AddSingleton<TrustedDeviceRegistryService>();
         builder.Services.AddSingleton<HealthTrackingService>();
         builder.Services.AddSingleton<WeeklyReportService>();
-        builder.Services.AddSingleton<Lullaby.Services.NyphosRiskEngine>();
+        builder.Services.AddSingleton<Hecateon.Services.NyphosRiskEngine>();
         builder.Services.AddSingleton<DownshiftProtocolService>();
         builder.Services.AddScoped<ChatLogService>();
         builder.Services.AddScoped<AssistantChatModel>();
@@ -84,7 +84,7 @@ public partial class Program
         app.MapStaticAssets();
         app.MapRazorComponents<App>()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(Lullaby.Client._Imports).Assembly);
+            .AddAdditionalAssemblies(typeof(Hecateon.Client._Imports).Assembly);
 
         app.MapSystemEndpoints();
         app.MapChatEndpoints();

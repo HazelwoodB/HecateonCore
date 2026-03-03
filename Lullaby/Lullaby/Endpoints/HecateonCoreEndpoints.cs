@@ -1,9 +1,9 @@
 using Hecateon.Core.DeviceRegistry;
 using Hecateon.Core.EventStore;
-using Lullaby.Models.Api.Endpoints;
+using Hecateon.Models.Api.Endpoints;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Lullaby.Endpoints;
+namespace Hecateon.Endpoints;
 
 public static class HecateonCoreEndpoints
 {

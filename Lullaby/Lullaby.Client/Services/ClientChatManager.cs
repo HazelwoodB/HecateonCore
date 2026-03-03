@@ -1,10 +1,10 @@
 using System.Collections.Concurrent;
 using System.Text;
 using System.Text.Json;
-using Lullaby.Client;
-using Lullaby.Client.Services.Foundation;
+using Hecateon.Client;
+using Hecateon.Client.Services.Foundation;
 
-namespace Lullaby.Client.Services;
+namespace Hecateon.Client.Services;
 
 /// <summary>
 /// Manages chat operations entirely on the client side.

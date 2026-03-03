@@ -1,10 +1,10 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using Lullaby.Models;
-using Lullaby.Data;
+using Hecateon.Models;
+using Hecateon.Data;
 
-namespace Lullaby.Services;
+namespace Hecateon.Services;
 
 public class LLMAssistantService(IHttpClientFactory httpFactory)
 {

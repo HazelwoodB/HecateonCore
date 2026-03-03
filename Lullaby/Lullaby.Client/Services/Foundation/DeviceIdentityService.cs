@@ -1,6 +1,6 @@
 using Microsoft.JSInterop;
 
-namespace Lullaby.Client.Services.Foundation;
+namespace Hecateon.Client.Services.Foundation;
 
 /// <summary>
 /// Maintains a stable local device identity used for trusted-device and sync audit foundations.

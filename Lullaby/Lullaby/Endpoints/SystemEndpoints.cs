@@ -1,4 +1,4 @@
-namespace Lullaby.Endpoints;
+namespace Hecateon.Endpoints;
 
 public static class SystemEndpoints
 {

@@ -1,4 +1,4 @@
-namespace Lullaby.Models;
+namespace Hecateon.Models;
 
 /// <summary>
 /// Downshift Protocol - structured intervention checklist for Orange/Red states

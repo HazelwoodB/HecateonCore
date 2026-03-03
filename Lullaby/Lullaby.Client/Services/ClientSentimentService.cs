@@ -1,6 +1,6 @@
-using Lullaby.Client;
+using Hecateon.Client;
 
-namespace Lullaby.Client.Services;
+namespace Hecateon.Client.Services;
 
 /// <summary>
 /// Client-side sentiment analysis using a simple keyword-based approach.

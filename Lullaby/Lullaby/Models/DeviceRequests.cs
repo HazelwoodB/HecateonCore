@@ -1,4 +1,4 @@
-namespace Lullaby.Models;
+namespace Hecateon.Models;
 
 public class DeviceEnrollRequest
 {
