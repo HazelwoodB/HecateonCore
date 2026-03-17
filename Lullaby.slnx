@@ -1,7 +1,0 @@
-<Solution>
-  <Project Path="src/Hecateon.Events/Hecateon.Events.csproj" />
-  <Project Path="Hecateon.Desktop/Hecateon.Desktop.csproj" />
-  <Project Path="Lullaby/Lullaby.Client/Lullaby.Client.csproj" />
-  <Project Path="Lullaby/Lullaby.Client.Tests/Lullaby.Client.Tests.csproj" />
-  <Project Path="Lullaby/Lullaby/Lullaby.csproj" />
-</Solution>

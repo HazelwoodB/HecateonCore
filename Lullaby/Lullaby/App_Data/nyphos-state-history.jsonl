@@ -1,1 +1,0 @@
-{"transitionId":"44c676eb-fc6a-4741-874f-feac3205eb4c","transitionedAtUtc":"2026-03-03T03:32:57.8564903Z","fromState":0,"toState":1,"reason":"Triggered by: Sleep disruption","triggeringFactors":[{"factor":"Sleep disruption","weight":0.5,"explanation":"No sleep data available","category":"Sleep"}],"confidenceAtTransition":0}
