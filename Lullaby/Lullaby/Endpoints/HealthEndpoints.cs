@@ -9,51 +9,6 @@ public static class HealthEndpoints
 {
     public static void MapHealthEndpoints(this WebApplication app)
     {
-        app.MapPost("/api/health/log", async (HttpContext http, [FromServices] TrustedDeviceRegistryService trustedDevices, [FromServices] HealthTrackingService healthTracking, [FromBody] LegacyHealthLogRequest request, CancellationToken cancellationToken) =>
-        {
-            try
-            {
-                var deviceId = http.Request.Headers["X-Device-Id"].FirstOrDefault();
-                if (string.IsNullOrWhiteSpace(deviceId))
-                {
-                    return Results.Unauthorized();
-                }
-
-                await trustedDevices.EnrollOrUpdatePendingAsync(deviceId, deviceId, cancellationToken);
-                if (!trustedDevices.IsApproved(deviceId))
-                {
-                    return Results.StatusCode(StatusCodes.Status403Forbidden);
-                }
-
-                var healthEvent = new HealthEvent
-                {
-                    EventType = HealthEventType.Mood,
-                    RecordedAtUtc = request.Timestamp,
-                    DeviceId = deviceId,
-                    MoodScore = Math.Clamp(request.Mood - 3, -2, 2),
-                    MoodLabel = request.Mood switch
-                    {
-                        1 => "awful",
-                        2 => "bad",
-                        3 => "okay",
-                        4 => "good",
-                        5 => "great",
-                        _ => "unknown"
-                    },
-                    Note = request.Sleep.HasValue
-                        ? $"Legacy log entry: sleep={request.Sleep.Value:F1}h"
-                        : "Legacy log entry"
-                };
-
-                var recorded = await healthTracking.RecordHealthEventAsync(healthEvent, deviceId, cancellationToken);
-                return recorded ? Results.Ok(new { id = healthEvent.Id, recorded = true }) : Results.Conflict();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[API] Error recording legacy health log: {ex}");
-                return Results.StatusCode(500);
-            }
-        });
 
         app.MapPost("/api/health/events", async (HttpContext http, [FromServices] TrustedDeviceRegistryService trustedDevices, [FromServices] HealthTrackingService healthTracking, [FromBody] HealthEventRequest request, CancellationToken cancellationToken) =>
         {

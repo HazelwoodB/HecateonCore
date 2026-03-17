@@ -15,18 +15,24 @@ public class AssistantChatModel
     private readonly LLMAssistantService _llmService;
     private readonly SimpleSentimentModel _sentimentModel;
     private readonly ChatLogService _chatLogService;
-    
+    private readonly Hecateon.Client.Services.Foundation.ConversationalNaturalnessEngine _naturalnessEngine;
+    private readonly Hecateon.Client.Services.Foundation.PreferenceManager _preferenceManager;
+
     private List<ChatMessage> _conversationContext = [];
     private const int MaxContextMessages = 20; // Keep last N messages for context
 
     public AssistantChatModel(
         LLMAssistantService llmService,
         SimpleSentimentModel sentimentModel,
-        ChatLogService chatLogService)
+        ChatLogService chatLogService,
+        Hecateon.Client.Services.Foundation.ConversationalNaturalnessEngine naturalnessEngine,
+        Hecateon.Client.Services.Foundation.PreferenceManager preferenceManager)
     {
         _llmService = llmService ?? throw new ArgumentNullException(nameof(llmService));
         _sentimentModel = sentimentModel ?? throw new ArgumentNullException(nameof(sentimentModel));
         _chatLogService = chatLogService ?? throw new ArgumentNullException(nameof(chatLogService));
+        _naturalnessEngine = naturalnessEngine ?? throw new ArgumentNullException(nameof(naturalnessEngine));
+        _preferenceManager = preferenceManager ?? throw new ArgumentNullException(nameof(preferenceManager));
     }
 
     /// <summary>
@@ -64,19 +70,70 @@ public class AssistantChatModel
         _conversationContext.Add(userMsg);
         MaintainContextWindow();
 
-        // Generate assistant response
-        var reply = await _llmService.GenerateReplyAsync(userMessage, cancellationToken)
+        // === 1. Observation: Fetch system state ===
+        var nyphosEngine = (Hecateon.Services.NyphosRiskEngine?)AppServices.GetService(typeof(Hecateon.Services.NyphosRiskEngine));
+        var prometheonEngine = (Hecateon.Modules.Prometheon.Services.IPrometheronEngine?)AppServices.GetService(typeof(Hecateon.Modules.Prometheon.Services.IPrometheronEngine));
+        var nyphosAssessment = nyphosEngine != null ? await nyphosEngine.CalculateRiskStateAsync(7, cancellationToken) : null;
+        var prometheonState = prometheonEngine != null ? await prometheonEngine.GetCurrentStateAsync() : null;
+
+        // === 2. Interpretation: Build explainable summary ===
+        string observation = nyphosAssessment != null
+            ? $"System state: {nyphosAssessment.CurrentState} (Risk {nyphosAssessment.RiskScore}/100). Key factors: {string.Join(", ", nyphosAssessment.ContributingFactors.Select(f => f.Factor))}."
+            : "System state: unavailable.";
+        string interpretation = nyphosAssessment != null
+            ? nyphosAssessment.StateExplanation ?? "No interpretation available."
+            : "No interpretation available.";
+
+        // === 3. Recommendation: Strategic action ===
+        string recommendation = nyphosAssessment != null && nyphosAssessment.RecommendedActions.Any()
+            ? $"Recommended action: {nyphosAssessment.RecommendedActions[0]}"
+            : "No specific recommendation.";
+
+        // === 4. Deterministic options ===
+        string options = nyphosAssessment != null && nyphosAssessment.RecommendedActions.Count > 1
+            ? $"Other options: {string.Join(" | ", nyphosAssessment.RecommendedActions.Skip(1))}"
+            : "No additional options.";
+
+        // Escalate tone if risk is high
+        string mode = nyphosAssessment != null ? nyphosAssessment.CurrentState.ToString() : "Unknown";
+        string tone = mode switch
+        {
+            "Red" => "[Crisis mode: Direct, urgent, safety-first.]",
+            "Orange" => "[Protective mode: Firm, stabilizing, proactive.]",
+            "Yellow" => "[Analytical mode: Cautious, attentive, advisory.]",
+            "Green" => "[Advisory mode: Calm, supportive, precise.]",
+            _ => "[Default mode: Calm, precise.]"
+        };
+
+        // Compose structured context for LLM
+        var structuredPrompt = $@"{tone}
+Observation: {observation}
+Interpretation: {interpretation}
+Recommendation: {recommendation}
+Deterministic options: {options}
+
+User message: {userMessage}
+";
+
+        // Use narrative-fitting system prompt
+        var systemPrompt = _naturalnessEngine.GenerateHumanLikeSystemPrompt(null, null);
+
+        // Generate assistant response with structured context
+        var reply = await _llmService.GenerateReplyAsync(structuredPrompt, cancellationToken)
             .ConfigureAwait(false);
 
+        // Post-process with ConversationalNaturalnessEngine
+        var humanizedReply = _naturalnessEngine.HumanizeResponse(reply, null);
+
         // Create and log assistant message
-        var assistantMsg = CreateAssistantMessage(reply);
+        var assistantMsg = CreateAssistantMessage(humanizedReply);
         await _chatLogService.AddMessageAsync(assistantMsg);
         _conversationContext.Add(assistantMsg);
         MaintainContextWindow();
 
         return new ChatResponse
         {
-            Reply = reply,
+            Reply = humanizedReply,
             Sentiment = userMsg.Sentiment ?? string.Empty,
             Score = userMsg.Score ?? 0
         };

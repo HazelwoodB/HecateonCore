@@ -323,3 +323,88 @@ public class SafetyStep
     public bool IsCompleted { get; set; }
     public DateTime? CompletedAtUtc { get; set; }
 }
+
+public class OperatorPanelResponse
+{
+    public OperatorStatusSnapshot? Status { get; set; }
+    public List<OperatorEventItem> Events { get; set; } = new();
+    public OperatorProjectionHealth? ProjectionHealth { get; set; }
+    public List<OperatorRunbookAction> RunbookActions { get; set; } = new();
+    public string CorrelationId { get; set; } = string.Empty;
+}
+
+public class OperatorStatusSnapshot
+{
+    public OperatorIdentity? Identity { get; set; }
+    public OperatorDeviceSnapshot? Device { get; set; }
+    public OperatorSyncSnapshot? Sync { get; set; }
+    public OperatorModeSnapshot? Mode { get; set; }
+    public OperatorNyphosSnapshot? Nyphos { get; set; }
+}
+
+public class OperatorIdentity
+{
+    public string UserId { get; set; } = string.Empty;
+    public string DeviceId { get; set; } = string.Empty;
+}
+
+public class OperatorDeviceSnapshot
+{
+    public bool IsApproved { get; set; }
+    public string DisplayName { get; set; } = string.Empty;
+    public string[] Scopes { get; set; } = Array.Empty<string>();
+    public DateTimeOffset? LastSeenUtc { get; set; }
+}
+
+public class OperatorSyncSnapshot
+{
+    public int QueueSize { get; set; }
+    public int DueQueueSize { get; set; }
+}
+
+public class OperatorModeSnapshot
+{
+    public string? Current { get; set; }
+    public string? Previous { get; set; }
+    public float? Confidence { get; set; }
+    public DateTimeOffset? UpdatedUtc { get; set; }
+}
+
+public class OperatorNyphosSnapshot
+{
+    public string State { get; set; } = string.Empty;
+    public double SleepIntegrity { get; set; }
+    public double MoodRisk { get; set; }
+    public double OverloadIndex { get; set; }
+    public DateTimeOffset? UpdatedUtc { get; set; }
+}
+
+public class OperatorEventItem
+{
+    public string Stream { get; set; } = string.Empty;
+    public long? Seq { get; set; }
+    public string EventId { get; set; } = string.Empty;
+    public string UserId { get; set; } = string.Empty;
+    public string DeviceId { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty;
+    public DateTimeOffset TimestampUtc { get; set; }
+    public int SchemaVersion { get; set; }
+    public string? ClientMsgId { get; set; }
+    public string PayloadJson { get; set; } = string.Empty;
+}
+
+public class OperatorProjectionHealth
+{
+    public long? GraphLastAppliedSeq { get; set; }
+    public long? PrometheonLastProcessedSeq { get; set; }
+    public Dictionary<string, long> StreamHeads { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+}
+
+public class OperatorRunbookAction
+{
+    public string Id { get; set; } = string.Empty;
+    public string Method { get; set; } = string.Empty;
+    public string Path { get; set; } = string.Empty;
+    public string[] Query { get; set; } = Array.Empty<string>();
+    public bool SafeAnytime { get; set; }
+}

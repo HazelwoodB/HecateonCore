@@ -7,7 +7,9 @@ using Hecateon.Core.DeviceRegistry;
 using Hecateon.Core.Security;
 using Hecateon.Modules.Nyphos.Services;
 using Hecateon.Endpoints;
+using Hecateon.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.RateLimiting;
 
 public partial class Program
 {
@@ -16,6 +18,28 @@ public partial class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        builder.Services.AddProblemDetails();
+        builder.Services.Configure<EventStoreOptions>(builder.Configuration.GetSection(EventStoreOptions.SectionName));
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.AddFixedWindowLimiter("DeviceEnrollPolicy", limiterOptions =>
+            {
+                limiterOptions.PermitLimit = 10;
+                limiterOptions.Window = TimeSpan.FromMinutes(1);
+                limiterOptions.QueueLimit = 0;
+                limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            });
+
+            options.AddFixedWindowLimiter("StreamAppendPolicy", limiterOptions =>
+            {
+                limiterOptions.PermitLimit = 60;
+                limiterOptions.Window = TimeSpan.FromMinutes(1);
+                limiterOptions.QueueLimit = 0;
+                limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            });
+        });
         builder.Services.AddRazorComponents()
             .AddInteractiveWebAssemblyComponents();
 
@@ -50,13 +74,13 @@ public partial class Program
         }
 
         // Register Hecateon Core services
-        builder.Services.AddSingleton<IEventStore, InMemoryEventStore>();
-        builder.Services.AddSingleton<IDeviceRegistry, InMemoryDeviceRegistry>();
+        builder.Services.AddScoped<IEventStore, DbEventStore>();
+        builder.Services.AddScoped<IDeviceRegistry, InMemoryDeviceRegistry>();
         builder.Services.AddSingleton<EncryptionService>(sp => 
             new EncryptionService(builder.Configuration["Security:MasterKey"]));
 
         // Register Nyphos services (using fully qualified name to avoid ambiguity)
-        builder.Services.AddSingleton<INyphosRiskEngine, Hecateon.Modules.Nyphos.Services.NyphosRiskEngine>();
+        builder.Services.AddScoped<INyphosRiskEngine, Hecateon.Modules.Nyphos.Services.NyphosRiskEngine>();
 
         // Register legacy services (for migration)
         builder.Services.AddSingleton<SimpleSentimentModel>();
@@ -68,6 +92,12 @@ public partial class Program
         builder.Services.AddSingleton<WeeklyReportService>();
         builder.Services.AddSingleton<Hecateon.Services.NyphosRiskEngine>();
         builder.Services.AddSingleton<DownshiftProtocolService>();
+        builder.Services.AddSingleton<ILocalSyncStateService, LocalSyncStateService>();
+        builder.Services.AddScoped<IGraphProjectionService, GraphProjectionService>();
+        builder.Services.AddScoped<IPrometheonExtractionService, PrometheonExtractionService>();
+        builder.Services.AddScoped<IModeEventService, ModeEventService>();
+        builder.Services.AddScoped<INyphosSignalEmitterService, NyphosSignalEmitterService>();
+        builder.Services.AddScoped<INyphosPreferenceService, NyphosPreferenceService>();
         builder.Services.AddScoped<ChatLogService>();
         builder.Services.AddScoped<AssistantChatModel>();
 
@@ -88,11 +118,13 @@ public partial class Program
         }
 
         // Use device authentication middleware (after exception handler, before routing)
+        app.UseMiddleware<CorrelationIdMiddleware>();
         app.UseDeviceAuthentication();
 
         app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
         app.UseHttpsRedirection();
 
+        app.UseRateLimiter();
         app.UseAntiforgery();
 
         app.MapStaticAssets();
@@ -107,6 +139,11 @@ public partial class Program
         app.MapDownshiftEndpoints();
         app.MapHecateonCoreEndpoints();
         app.MapNyphosEndpoints();
+        app.MapSyncEndpoints();
+        app.MapGraphEndpoints();
+        app.MapPrometheonEndpoints();
+        app.MapModeEndpoints();
+        app.MapOperatorEndpoints();
 
         app.Run();
     }

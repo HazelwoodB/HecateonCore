@@ -234,6 +234,10 @@
                 <span class="action-icon">⏰</span>
                 <span>Routine</span>
             </button>
+            <button class="action-btn" @onclick="ViewOperatorPanel">
+                <span class="action-icon">🛠️</span>
+                <span>Operator</span>
+            </button>
             <button class="action-btn" @onclick="ViewHistory">
                 <span class="action-icon">📖</span>
                 <span>History</span>
@@ -450,6 +454,7 @@
         }
     }
 
+    private void ViewOperatorPanel() => Navigation.NavigateTo("/operator");
     private void ViewDownshiftProtocol() => Navigation.NavigateTo("/nyphos/downshift");
     private void ManageCrisisPlan() => Navigation.NavigateTo("/nyphos/crisis-plan");
     private void ViewHistory() => Navigation.NavigateTo("/wellness/history");

@@ -56,7 +56,85 @@ public static class NyphosEndpoints
             }
 
             var state = await riskEngine.ComputeStateAsync(deviceId, cancellationToken);
-            return Results.Ok(state);
+
+            var userId = http.Request.Headers["X-User-Id"].FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                userId = "local-operator";
+            }
+
+            var emitter = http.RequestServices.GetRequiredService<INyphosSignalEmitterService>();
+            var (signalSeq, safeguardSeq) = await emitter.EmitFromStateAsync(userId, deviceId, state, cancellationToken);
+
+            return Results.Ok(new
+            {
+                state,
+                emitted = new
+                {
+                    nyphosSignalSeq = signalSeq,
+                    safeguardRecommendedSeq = safeguardSeq
+                }
+            });
+        });
+
+        app.MapGet("/api/nyphos/settings", async (HttpContext http, [FromServices] INyphosPreferenceService preferences, [FromQuery] string? userId, CancellationToken cancellationToken) =>
+        {
+            var deviceId = http.Request.Headers["X-Device-Id"].FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(deviceId))
+            {
+                return Results.Unauthorized();
+            }
+
+            var resolvedUserId = string.IsNullOrWhiteSpace(userId) ? "local-operator" : userId;
+            var settings = await preferences.GetOrDefaultAsync(resolvedUserId, deviceId, cancellationToken);
+            return Results.Ok(settings);
+        });
+
+        app.MapPut("/api/nyphos/settings/tone", async (HttpContext http, [FromBody] NyphosToneRequest request, [FromServices] INyphosPreferenceService preferences, CancellationToken cancellationToken) =>
+        {
+            var deviceId = http.Request.Headers["X-Device-Id"].FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(deviceId))
+            {
+                return Results.Unauthorized();
+            }
+
+            var resolvedUserId = string.IsNullOrWhiteSpace(request.UserId) ? "local-operator" : request.UserId;
+            try
+            {
+                var settings = await preferences.SetToneAsync(resolvedUserId, deviceId, request.Tone, cancellationToken);
+                return Results.Ok(settings);
+            }
+            catch (ArgumentException ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
+
+        app.MapPost("/api/nyphos/settings/mute", async (HttpContext http, [FromBody] NyphosMuteRequest request, [FromServices] INyphosPreferenceService preferences, CancellationToken cancellationToken) =>
+        {
+            var deviceId = http.Request.Headers["X-Device-Id"].FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(deviceId))
+            {
+                return Results.Unauthorized();
+            }
+
+            var resolvedUserId = string.IsNullOrWhiteSpace(request.UserId) ? "local-operator" : request.UserId;
+            var hours = request.Hours ?? 24;
+            var settings = await preferences.SetMuteAsync(resolvedUserId, deviceId, hours, cancellationToken);
+            return Results.Ok(settings);
+        });
+
+        app.MapDelete("/api/nyphos/settings/mute", async (HttpContext http, [FromServices] INyphosPreferenceService preferences, [FromQuery] string? userId, CancellationToken cancellationToken) =>
+        {
+            var deviceId = http.Request.Headers["X-Device-Id"].FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(deviceId))
+            {
+                return Results.Unauthorized();
+            }
+
+            var resolvedUserId = string.IsNullOrWhiteSpace(userId) ? "local-operator" : userId;
+            var settings = await preferences.ClearMuteAsync(resolvedUserId, deviceId, cancellationToken);
+            return Results.Ok(settings);
         });
     }
 }

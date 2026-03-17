@@ -43,13 +43,7 @@ public static class ChatEndpoints
                 }
 
                 var projection = await eventLogService.GetChatHistoryProjectionAsync(limit, cancellationToken);
-                if (projection.Count > 0)
-                {
-                    return Results.Ok(projection);
-                }
-
-                var legacyHistory = chatLogService.GetHistory(limit);
-                return Results.Ok(legacyHistory);
+                return Results.Ok(projection);
             }
             catch (Exception ex)
             {

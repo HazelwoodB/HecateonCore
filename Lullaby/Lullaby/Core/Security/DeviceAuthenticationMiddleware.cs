@@ -107,6 +107,11 @@ public class DeviceAuthenticationMiddleware
         return path.StartsWith("/api/chat") ||
                path.StartsWith("/api/health") ||
                path.StartsWith("/api/nyphos") ||
+               path.StartsWith("/api/sync") ||
+             path.StartsWith("/api/graph") ||
+             path.StartsWith("/api/prometheon") ||
+               path.StartsWith("/api/modes") ||
+               path.StartsWith("/api/operator") ||
                path.StartsWith("/api/messages") ||
                path.StartsWith("/api/history") ||
                path.StartsWith("/api/downshift");

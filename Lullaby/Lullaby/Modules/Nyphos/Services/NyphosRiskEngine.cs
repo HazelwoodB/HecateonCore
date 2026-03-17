@@ -1,7 +1,9 @@
 namespace Hecateon.Modules.Nyphos.Services;
 
 using Hecateon.Core.EventStore;
+using Hecateon.Events;
 using Hecateon.Modules.Nyphos.Models;
+using System.Text.Json;
 
 /// <summary>
 /// Nyphos Risk Engine
@@ -97,6 +99,30 @@ public class NyphosRiskEngine : INyphosRiskEngine
         };
 
         await _eventStore.AppendAsync(@event, cancellationToken);
+
+        var envelope = new EventEnvelope
+        {
+            EventId = Guid.NewGuid().ToString(),
+            UserId = "local-operator",
+            DeviceId = deviceId,
+            Stream = EventStream.Nyphos,
+            Type = "SleepLogged",
+            Seq = null,
+            TimestampUtc = null,
+            SchemaVersion = 1,
+            ClientMsgId = $"nyphos-sleep:{deviceId}:{Guid.NewGuid():N}",
+            PayloadJson = JsonSerializer.Serialize(new
+            {
+                sleepStart,
+                sleepEnd,
+                qualityScore,
+                interruptions,
+                advisoryByDefault = true,
+                source = "nyphos-risk-engine"
+            })
+        };
+
+        _ = await _eventStore.AppendToStreamAsync(EventStream.Nyphos, [envelope], cancellationToken);
     }
 
     public async Task LogMoodAsync(string deviceId, int? energyLevel, int? moodScore, string? moodLabel, string? notes, CancellationToken cancellationToken = default)
@@ -113,6 +139,30 @@ public class NyphosRiskEngine : INyphosRiskEngine
         };
 
         await _eventStore.AppendAsync(@event, cancellationToken);
+
+        var envelope = new EventEnvelope
+        {
+            EventId = Guid.NewGuid().ToString(),
+            UserId = "local-operator",
+            DeviceId = deviceId,
+            Stream = EventStream.Nyphos,
+            Type = "MoodLogged",
+            Seq = null,
+            TimestampUtc = null,
+            SchemaVersion = 1,
+            ClientMsgId = $"nyphos-mood:{deviceId}:{Guid.NewGuid():N}",
+            PayloadJson = JsonSerializer.Serialize(new
+            {
+                energyLevel,
+                moodScore,
+                moodLabel,
+                notes,
+                advisoryByDefault = true,
+                source = "nyphos-risk-engine"
+            })
+        };
+
+        _ = await _eventStore.AppendToStreamAsync(EventStream.Nyphos, [envelope], cancellationToken);
     }
 
     // ========== SLEEP INTEGRITY CALCULATION ==========

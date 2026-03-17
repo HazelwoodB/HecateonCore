@@ -21,6 +21,7 @@ dotnet run
 
 ---
 
+
 ## 📖 **→ [COMPLETE DOCUMENTATION](ARIA_COMPLETE_DOCUMENTATION.md) ←**
 
 **Everything you need is in one file:**
@@ -32,6 +33,20 @@ dotnet run
 - Troubleshooting
 - API reference
 - WandaVision themes guide
+
+---
+
+## 🕯️ Narrative Model & Boundaries
+
+For the full narrative structure, risk escalation, and operational boundaries, see:
+
+- [Narrative Model & Operational Boundaries](../Documentation/NARRATIVE_MODEL_AND_BOUNDARIES.md)
+
+Key points:
+- Companion responses follow: **Observation → Interpretation → Recommendation → Deterministic Options**
+- Risk-based tone escalation (calm → urgent) is always explainable and versioned
+- Visual motif: subtle lantern/sigil 🕯️, never anthropomorphic
+- All logic is deterministic, auditable, and operator-bound—no improvisation or hidden state
 
 ---
 

@@ -1,0 +1,582 @@
+@page "/operator"
+@using Hecateon.Client
+@implements IAsyncDisposable
+@inject Hecateon.Client.Services.OperatorPanelService OperatorPanelService
+@inject Hecateon.Client.Services.OperatorPanelPreferencesService OperatorPreferencesService
+@inject IJSRuntime JS
+
+<PageTitle>Operator Panel</PageTitle>
+
+<div class="operator-container">
+    <div class="operator-header">
+        <div>
+            <h1>Operator Panel</h1>
+            <p>Live operational snapshot from /api/operator/panel</p>
+            <p class="meta-line">Last updated (UTC): @(_lastSuccessfulRefreshUtc?.ToString("u") ?? "never")</p>
+        </div>
+        <div class="header-controls">
+            <select class="input-control" @bind="_streamFilter" @bind:after="OnFiltersChangedAsync" disabled="@_loading">
+                <option value="">All streams</option>
+                <option value="chat">chat</option>
+                <option value="graph">graph</option>
+                <option value="nyphos">nyphos</option>
+                <option value="system">system</option>
+                <option value="devices">devices</option>
+                <option value="identity">identity</option>
+            </select>
+            <input class="input-control input-limit" type="number" min="1" max="500" @bind="_limit" @bind:after="OnFiltersChangedAsync" disabled="@_loading" />
+            <label class="field-check compact-check">
+                <input type="checkbox" @bind="_autoRefreshEnabled" @bind:after="OnAutoRefreshChangedAsync" disabled="@_loading" />
+                Auto
+            </label>
+            <input class="input-control input-seconds" type="number" min="5" max="300" @bind="_autoRefreshSeconds" @bind:after="OnAutoRefreshChangedAsync" disabled="@(!_autoRefreshEnabled || _loading)" />
+            <button class="btn-action" @onclick="ToggleAutoPauseAsync" disabled="@(!_autoRefreshEnabled || _loading)">@(_autoRefreshPaused ? "Resume Auto" : "Pause Auto")</button>
+            <button class="btn-action" @onclick="ResetPreferencesAsync" disabled="@_loading">Reset</button>
+            <button class="btn-refresh" @onclick="RefreshAsync" disabled="@_loading">@(_loading ? "Loading..." : "Refresh")</button>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="state-banner error">@_error</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(_actionMessage))
+    {
+        <div class="state-banner">@_actionMessage</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(_actionError))
+    {
+        <div class="state-banner error">@_actionError</div>
+    }
+    else if (_panel is null)
+    {
+        <div class="state-banner">No panel data available.</div>
+    }
+    else
+    {
+        <div class="status-grid">
+            <div class="card">
+                <h3>Identity</h3>
+                <p>User: @_panel.Status?.Identity?.UserId</p>
+                <p>Device: @_panel.Status?.Identity?.DeviceId</p>
+                <p>Correlation: @_panel.CorrelationId</p>
+            </div>
+            <div class="card">
+                <h3>Sync</h3>
+                <p>Queue: @_panel.Status?.Sync?.QueueSize</p>
+                <p>Due: @_panel.Status?.Sync?.DueQueueSize</p>
+            </div>
+            <div class="card">
+                <h3>Mode</h3>
+                <p>Current: @_panel.Status?.Mode?.Current</p>
+                <p>Previous: @_panel.Status?.Mode?.Previous</p>
+                <p>Confidence: @FormatNumber(_panel.Status?.Mode?.Confidence)</p>
+            </div>
+            <div class="card">
+                <h3>Nyphos</h3>
+                <p>State: @_panel.Status?.Nyphos?.State</p>
+                <p>Sleep integrity: @FormatNumber(_panel.Status?.Nyphos?.SleepIntegrity)</p>
+                <p>Mood risk: @FormatNumber(_panel.Status?.Nyphos?.MoodRisk)</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Projection Health</h2>
+            <div class="card">
+                <p>Graph last applied: @_panel.ProjectionHealth?.GraphLastAppliedSeq</p>
+                <p>Prometheon last processed: @_panel.ProjectionHealth?.PrometheonLastProcessedSeq</p>
+                <ul>
+                    @foreach (var head in (_panel.ProjectionHealth?.StreamHeads ?? new Dictionary<string, long>()).OrderBy(x => x.Key))
+                    {
+                        <li>@head.Key: @head.Value</li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Snapshot Export</h2>
+            <div class="card guarded-export">
+                <label class="field-label">Recent events per stream (1-500)</label>
+                <div class="inline-controls">
+                    <input class="input-control input-limit" type="number" min="1" max="500" @bind="_exportRecentEvents" @bind:after="OnExportSettingsChangedAsync" disabled="@_exportRunning" />
+                    <button class="btn-action" @onclick="ExecuteSnapshotExportAsync" disabled="@_exportRunning">
+                        @(_exportRunning ? "Exporting..." : "Export Snapshot")
+                    </button>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(_lastExportFileName))
+                {
+                    <div class="export-result">
+                        <p>File: @_lastExportFileName</p>
+                        @if (!string.IsNullOrWhiteSpace(_lastExportRelativePath))
+                        {
+                            <p>Path: @_lastExportRelativePath</p>
+                        }
+                        <button class="btn-action" @onclick="CopyLastExportFileNameAsync">Copy file name</button>
+                    </div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(_copyMessage))
+                {
+                    <p class="copy-message">@_copyMessage</p>
+                }
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Runbook Actions</h2>
+            <div class="card">
+                <ul>
+                    @foreach (var action in _panel.RunbookActions)
+                    {
+                        var isExecuting = string.Equals(_activeActionId, action.Id, StringComparison.OrdinalIgnoreCase);
+                        <li class="runbook-row">
+                            <span>@action.Id · @action.Method @action.Path @(action.SafeAnytime ? "(safe anytime)" : "(caution)")</span>
+                            @if (action.SafeAnytime)
+                            {
+                                <button class="btn-action" @onclick="() => ExecuteActionAsync(action)" disabled="@isExecuting">@(isExecuting ? "Running..." : "Run")</button>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Snapshot Import (Guarded)</h2>
+            <div class="card guarded-import">
+                <label class="field-label">File name</label>
+                <input class="input-control" placeholder="hecateon-snapshot-YYYYMMDD-HHMMSS.json" @bind="_importFileName" @bind:after="OnImportSettingsChangedAsync" disabled="@_importRunning" />
+
+                <label class="field-check">
+                    <input type="checkbox" @bind="_importApply" @bind:after="OnImportSettingsChangedAsync" disabled="@_importRunning" />
+                    Apply imported values (writes state)
+                </label>
+
+                <label class="field-check field-confirm">
+                    <input type="checkbox" @bind="_importConfirmed" disabled="@_importRunning" />
+                    I understand this may modify local operator state
+                </label>
+
+                <button class="btn-action" @onclick="ExecuteSnapshotImportAsync" disabled="@(!_importConfirmed || string.IsNullOrWhiteSpace(_importFileName) || _importRunning)">
+                    @(_importRunning ? "Importing..." : "Import Snapshot")
+                </button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Recent Events (@_panel.Events.Count)</h2>
+            <div class="card events-card">
+                @if (_panel.Events.Count == 0)
+                {
+                    <p>No events available.</p>
+                }
+                else
+                {
+                    <table class="events-table">
+                        <thead>
+                            <tr>
+                                <th>Seq</th>
+                                <th>Stream</th>
+                                <th>Type</th>
+                                <th>Time (UTC)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ev in _panel.Events.Take(50))
+                            {
+                                <tr>
+                                    <td>@ev.Seq</td>
+                                    <td>@ev.Stream</td>
+                                    <td>@ev.Type</td>
+                                    <td>@ev.TimestampUtc.ToString("u")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private OperatorPanelResponse? _panel;
+    private bool _loading;
+    private string? _error;
+    private string? _activeActionId;
+    private string? _actionMessage;
+    private string? _actionError;
+    private string _streamFilter = string.Empty;
+    private int _limit = 100;
+    private string _importFileName = string.Empty;
+    private bool _importApply;
+    private bool _importConfirmed;
+    private bool _importRunning;
+    private int _exportRecentEvents = 50;
+    private bool _exportRunning;
+    private string? _lastExportFileName;
+    private string? _lastExportRelativePath;
+    private string? _copyMessage;
+    private DateTimeOffset? _lastSuccessfulRefreshUtc;
+    private bool _autoRefreshEnabled;
+    private bool _autoRefreshPaused;
+    private int _autoRefreshSeconds = 30;
+    private CancellationTokenSource? _autoRefreshCts;
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPreferencesAsync();
+        await ConfigureAutoRefreshAsync();
+        await RefreshAsync();
+    }
+
+    private async Task RefreshAsync()
+    {
+        await _refreshLock.WaitAsync();
+        _loading = true;
+        _error = null;
+
+        try
+        {
+            _panel = await OperatorPanelService.GetPanelAsync(
+                stream: string.IsNullOrWhiteSpace(_streamFilter) ? null : _streamFilter,
+                limit: _limit);
+            if (_panel is null)
+            {
+                _error = "Operator panel endpoint returned no data.";
+            }
+            else
+            {
+                _lastSuccessfulRefreshUtc = DateTimeOffset.UtcNow;
+            }
+        }
+        catch (Exception ex)
+        {
+            _error = $"Failed to load operator panel: {ex.Message}";
+        }
+        finally
+        {
+            _loading = false;
+            _refreshLock.Release();
+        }
+    }
+
+    private async Task OnAutoRefreshChangedAsync()
+    {
+        await ConfigureAutoRefreshAsync();
+        await SavePreferencesAsync();
+    }
+
+    private async Task OnFiltersChangedAsync()
+    {
+        _limit = Math.Clamp(_limit, 1, 500);
+        await SavePreferencesAsync();
+    }
+
+    private async Task OnExportSettingsChangedAsync()
+    {
+        _exportRecentEvents = Math.Clamp(_exportRecentEvents, 1, 500);
+        await SavePreferencesAsync();
+    }
+
+    private async Task OnImportSettingsChangedAsync()
+    {
+        _importFileName = _importFileName.Trim();
+        await SavePreferencesAsync();
+    }
+
+    private async Task ConfigureAutoRefreshAsync()
+    {
+        if (!_autoRefreshEnabled)
+        {
+            StopAutoRefreshLoop();
+            _autoRefreshPaused = false;
+            return;
+        }
+
+        _autoRefreshSeconds = Math.Clamp(_autoRefreshSeconds, 5, 300);
+        StopAutoRefreshLoop();
+
+        _autoRefreshCts = new CancellationTokenSource();
+        var token = _autoRefreshCts.Token;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(_autoRefreshSeconds), token);
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    if (!_autoRefreshPaused)
+                    {
+                        await InvokeAsync(RefreshAsync);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Expected when auto-refresh is disabled.
+            }
+        }, token);
+
+        await Task.CompletedTask;
+    }
+
+    private void StopAutoRefreshLoop()
+    {
+        if (_autoRefreshCts is null)
+        {
+            return;
+        }
+
+        try
+        {
+            _autoRefreshCts.Cancel();
+        }
+        catch
+        {
+            // No-op
+        }
+        finally
+        {
+            _autoRefreshCts.Dispose();
+            _autoRefreshCts = null;
+        }
+    }
+
+    private async Task ExecuteActionAsync(OperatorRunbookAction action)
+    {
+        _activeActionId = action.Id;
+        _actionMessage = null;
+        _actionError = null;
+
+        try
+        {
+            var result = await OperatorPanelService.ExecuteRunbookActionAsync(action);
+            if (result.Success)
+            {
+                _actionMessage = result.Message;
+                await SavePreferencesAsync();
+                await RefreshAsync();
+            }
+            else
+            {
+                _actionError = result.Message;
+            }
+        }
+        catch (Exception ex)
+        {
+            _actionError = $"Failed to execute action '{action.Id}': {ex.Message}";
+        }
+        finally
+        {
+            _activeActionId = null;
+        }
+    }
+
+    private async Task ExecuteSnapshotImportAsync()
+    {
+        _importRunning = true;
+        _actionMessage = null;
+        _actionError = null;
+
+        try
+        {
+            var result = await OperatorPanelService.ExecuteSnapshotImportAsync(
+                _importFileName,
+                _importApply,
+                _importConfirmed);
+
+            if (result.Success)
+            {
+                _actionMessage = result.Message;
+                await RefreshAsync();
+            }
+            else
+            {
+                _actionError = result.Message;
+            }
+        }
+        catch (Exception ex)
+        {
+            _actionError = $"Snapshot import failed: {ex.Message}";
+        }
+        finally
+        {
+            _importRunning = false;
+        }
+    }
+
+    private async Task ExecuteSnapshotExportAsync()
+    {
+        _exportRunning = true;
+        _actionMessage = null;
+        _actionError = null;
+        _copyMessage = null;
+
+        try
+        {
+            var result = await OperatorPanelService.ExecuteSnapshotExportAsync(_exportRecentEvents);
+            if (result.Success)
+            {
+                _actionMessage = result.Message;
+                _lastExportFileName = result.FileName;
+                _lastExportRelativePath = result.RelativePath;
+
+                if (!string.IsNullOrWhiteSpace(result.FileName))
+                {
+                    _importFileName = result.FileName;
+                }
+
+                await SavePreferencesAsync();
+
+                await RefreshAsync();
+            }
+            else
+            {
+                _actionError = result.Message;
+            }
+        }
+        catch (Exception ex)
+        {
+            _actionError = $"Snapshot export failed: {ex.Message}";
+        }
+        finally
+        {
+            _exportRunning = false;
+        }
+    }
+
+    private async Task CopyLastExportFileNameAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_lastExportFileName))
+        {
+            _copyMessage = "No export file name to copy.";
+            return;
+        }
+
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", _lastExportFileName);
+            _copyMessage = "Export file name copied.";
+        }
+        catch (Exception ex)
+        {
+            _copyMessage = $"Copy failed: {ex.Message}";
+        }
+    }
+
+    private static string FormatNumber(double? value) => value.HasValue ? value.Value.ToString("0.00") : "-";
+    private static string FormatNumber(float? value) => value.HasValue ? value.Value.ToString("0.00") : "-";
+
+    private async Task LoadPreferencesAsync()
+    {
+        try
+        {
+            var prefs = await OperatorPreferencesService.LoadAsync();
+
+            _streamFilter = prefs.StreamFilter;
+            _limit = prefs.Limit;
+            _autoRefreshEnabled = prefs.AutoRefreshEnabled;
+            _autoRefreshSeconds = prefs.AutoRefreshSeconds;
+            _autoRefreshPaused = prefs.AutoRefreshPaused;
+            _exportRecentEvents = prefs.ExportRecentEvents;
+            _importFileName = prefs.ImportFileName;
+            _importApply = prefs.ImportApply;
+            _lastExportFileName = prefs.LastExportFileName;
+            _lastExportRelativePath = prefs.LastExportRelativePath;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[OperatorPanel] Failed to load preferences: {ex.Message}");
+        }
+    }
+
+    private async Task SavePreferencesAsync()
+    {
+        try
+        {
+            var prefs = new OperatorPanelPreferences
+            {
+                StreamFilter = _streamFilter,
+                Limit = Math.Clamp(_limit, 1, 500),
+                AutoRefreshEnabled = _autoRefreshEnabled,
+                AutoRefreshSeconds = Math.Clamp(_autoRefreshSeconds, 5, 300),
+                AutoRefreshPaused = _autoRefreshPaused,
+                ExportRecentEvents = Math.Clamp(_exportRecentEvents, 1, 500),
+                ImportFileName = _importFileName,
+                ImportApply = _importApply,
+                LastExportFileName = _lastExportFileName,
+                LastExportRelativePath = _lastExportRelativePath
+            };
+
+            await OperatorPreferencesService.SaveAsync(prefs);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[OperatorPanel] Failed to save preferences: {ex.Message}");
+        }
+    }
+
+    private async Task ResetPreferencesAsync()
+    {
+        _actionMessage = null;
+        _actionError = null;
+
+        try
+        {
+            var defaults = await OperatorPreferencesService.ResetAsync();
+
+            _streamFilter = defaults.StreamFilter;
+            _limit = defaults.Limit;
+            _autoRefreshEnabled = defaults.AutoRefreshEnabled;
+            _autoRefreshPaused = defaults.AutoRefreshPaused;
+            _autoRefreshSeconds = defaults.AutoRefreshSeconds;
+            _exportRecentEvents = defaults.ExportRecentEvents;
+            _importFileName = defaults.ImportFileName;
+            _importApply = defaults.ImportApply;
+            _lastExportFileName = defaults.LastExportFileName;
+            _lastExportRelativePath = defaults.LastExportRelativePath;
+
+            await ConfigureAutoRefreshAsync();
+            await RefreshAsync();
+
+            _actionMessage = "Operator preferences reset to defaults.";
+        }
+        catch (Exception ex)
+        {
+            _actionError = $"Failed to reset preferences: {ex.Message}";
+        }
+    }
+
+    private async Task ToggleAutoPauseAsync()
+    {
+        if (!_autoRefreshEnabled)
+        {
+            return;
+        }
+
+        _autoRefreshPaused = !_autoRefreshPaused;
+        _actionError = null;
+        _actionMessage = _autoRefreshPaused
+            ? "Auto-refresh paused."
+            : "Auto-refresh resumed.";
+
+        await SavePreferencesAsync();
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        StopAutoRefreshLoop();
+        _refreshLock.Dispose();
+        return ValueTask.CompletedTask;
+    }
+}

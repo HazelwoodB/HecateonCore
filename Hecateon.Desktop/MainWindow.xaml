@@ -16,6 +16,8 @@
         MinWidth="1100">
 
     <Window.Resources>
+
+        <!-- Enhanced Brushes -->
         <SolidColorBrush x:Key="BgBrush" Color="#0E0A17"/>
         <SolidColorBrush x:Key="PanelBrush" Color="#181226"/>
         <SolidColorBrush x:Key="PanelAltBrush" Color="#22182F"/>
@@ -28,8 +30,14 @@
         <SolidColorBrush x:Key="TextMutedBrush" Color="#C5B39A"/>
         <SolidColorBrush x:Key="SuccessBrush" Color="#35C86A"/>
         <SolidColorBrush x:Key="InputBrush" Color="#130E1D"/>
-        <SolidColorBrush x:Key="UserBubbleBrush" Color="#2C2239"/>
-        <SolidColorBrush x:Key="AssistantBubbleBrush" Color="#1B1427"/>
+        <LinearGradientBrush x:Key="UserBubbleBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#2C2239" Offset="0"/>
+            <GradientStop Color="#3A2A4B" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="AssistantBubbleBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#1B1427" Offset="0"/>
+            <GradientStop Color="#2A1E39" Offset="1"/>
+        </LinearGradientBrush>
 
         <LinearGradientBrush x:Key="WindowGradient" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#120B1D" Offset="0"/>
@@ -46,6 +54,11 @@
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="8" ShadowDepth="2" Color="#2A1E39"/>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -58,9 +71,23 @@
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#3A2A4B"/>
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="16" ShadowDepth="4" Color="#E7C58A"/>
+                        </Setter.Value>
+                    </Setter>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Background" Value="#1E1728"/>
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="4" ShadowDepth="1" Color="#BE9B6A"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#E7C58A"/>
+                    <Setter Property="Background" Value="#3A2A4B"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -72,6 +99,11 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="14,10"/>
             <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="6" ShadowDepth="1" Color="#2A1E39"/>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
@@ -84,12 +116,22 @@
             <Style.Triggers>
                 <Trigger Property="IsFocused" Value="True">
                     <Setter Property="BorderBrush" Value="{StaticResource GoldBrush}"/>
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="12" ShadowDepth="2" Color="#E7C58A"/>
+                        </Setter.Value>
+                    </Setter>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="LeftNavTabItemStyle" TargetType="TabItem">
             <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="6" ShadowDepth="1" Color="#2A1E39"/>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
@@ -101,15 +143,31 @@
                                 <Setter TargetName="NavBorder" Property="Background" Value="#2B1F38"/>
                                 <Setter TargetName="NavBorder" Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
                                 <Setter Property="Foreground" Value="{StaticResource GoldBrush}"/>
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="12" ShadowDepth="2" Color="#E7C58A"/>
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="NavBorder" Property="Background" Value="#21182E"/>
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="2" Color="#BE9B6A"/>
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+            <!-- Font scaling and theme toggle placeholder for settings -->
+            <Style x:Key="SettingsLabelStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Foreground" Value="{StaticResource TextMainBrush}"/>
+                <Setter Property="Margin" Value="0,6,0,0"/>
+            </Style>
     </Window.Resources>
 
     <Grid Background="{StaticResource WindowGradient}">

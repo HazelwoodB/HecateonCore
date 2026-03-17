@@ -1,42 +1,41 @@
-# HecateonCore - Hecateon Desktop Application
-## Comprehensive Project Overview
 
-**Repository**: `https://github.com/HazelwoodB/HecateonCore.git`  
-**Branch**: `main`  
-**Project Name**: HecateonCore Platform  
-**Type**: WPF Desktop Application (.NET) + ASP.NET Core Web Dashboard
+# HecateonCore Next Steps Playbook
 
----
+## 1. Security & Privacy Hardening
+- Enforce end-to-end encryption for all client-server and backup operations.
+- Implement robust audit logging for all operator and system actions.
+- Expand trusted device registry with device attestation and revocation.
+- Require explicit user consent for all remote or sensitive actions.
 
-## 📜 Project History
+## 2. Data Integrity & Resilience
+- Make event store and all critical logs append-only and tamper-evident.
+- Add automated, encrypted, versioned backup/restore with integrity checks.
+- Implement offline-first sync with conflict resolution and rollback.
 
-**HecateonCore** is the evolution and consolidation of the AutoPC project. All development has been unified into this repository as of **January 2025**.
+## 3. Risk Engine & Explainability
+- Expand risk scoring to cover more event types and user routines.
+- Add interpretable, clinician-friendly explanations for all risk outputs.
+- Version all rules/models and support rollback to previous versions.
 
-### Migration Timeline:
-- **Q4 2024**: AutoPC web application (original proof-of-concept)
-- **Q1 2025**: Expanded to include Hecateon Desktop (WPF), NYPHOS module, comprehensive tooling
-- **January 2025**: Migrated to HecateonCore repository, AutoPC archived
+## 4. Operator & Clinician Experience
+- Refine operator panel for rapid triage, downshift, and crisis workflows.
+- Add customizable intervention ladders and consent boundaries.
+- Implement weekly/monthly export with full audit and trend reporting.
 
-**Previous Repository**: [AutoPC](https://github.com/HazelwoodB/AutoPC) (Archived - Read-only)
+## 5. Remote Access & Federation
+- Restrict remote access to VPN and trusted devices only.
+- Add federated sync for multi-site/home deployments (opt-in).
+- Provide clear UI for remote session consent and revocation.
 
----
+## 6. Testing, Monitoring, & Compliance
+- Expand automated test coverage (unit, integration, security, UI).
+- Add real-time health monitoring and alerting for all core services.
+- Prepare compliance documentation for privacy, safety, and audit standards.
 
-## 🎯 Project Mission
-
-**Local-first, Privacy-first, Safety-first** architecture for personal wellness monitoring with predictable behavior and strong user agency.
-
-### Core Principles
-- **Home server as source of truth** with append-only event store
-- **Offline-capable encrypted clients**
-- **VPN-only remote access** with trusted device registry
-- **Interpretable risk engine** with explainable outputs and hysteresis
-- **Deterministic intervention ladder**
-- **Explicit consent boundaries**
-- **Clinician-ready reporting**
-- **Encrypted backups**
-- **Versioned rules/models**
-
----
+## 7. Documentation & Onboarding
+- Update all user, operator, and developer documentation.
+- Provide onboarding guides for clinicians and home users.
+- Maintain a clear, versioned changelog and upgrade path.
 
 ## 🏗️ Architecture
 

@@ -38,4 +38,18 @@ Owns Operator/Child/Beast indices, narrative distortion tracking, transaction an
 
 ## Versioning Model
 - Identity consolidation release: v2.0.0
+
+---
+
+
+## 🕯️ Narrative Model & Boundaries
+
+For a detailed description of the companion’s narrative structure, risk escalation, and operational boundaries, see:
+
+- [Narrative Model & Operational Boundaries](NARRATIVE_MODEL_AND_BOUNDARIES.md)
+
+This ensures all operator and developer actions are safe, explainable, and fully auditable.
+
+**See also:** [ARIA Complete Documentation](../Lullaby/ARIA_COMPLETE_DOCUMENTATION.md)
+
 - Legacy naming retained only in compatibility shims and historical documentation

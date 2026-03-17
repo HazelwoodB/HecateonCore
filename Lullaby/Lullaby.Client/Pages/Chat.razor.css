@@ -1,3 +1,50 @@
+/* Companion Motif (Lantern/Sigil) */
+.companion-motif {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background: none;
+    position: relative;
+    margin-right: 0.1rem;
+}
+
+.companion-motif::before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    background: radial-gradient(circle at 50% 60%, #e9d8a6 60%, #bfae82 80%, transparent 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 12px 4px #e9d8a6cc, 0 0 32px 8px #bfae8255;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    opacity: 0.85;
+    animation: motif-glow 2.8s ease-in-out infinite;
+}
+
+.companion-motif::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 14px;
+    background: linear-gradient(180deg, #fffbe6 0%, #e9d8a6 80%, #bfae82 100%);
+    border-radius: 4px 4px 8px 8px;
+    box-shadow: 0 2px 8px 0 #e9d8a6aa;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    opacity: 0.95;
+}
+
+@keyframes motif-glow {
+    0%, 100% { box-shadow: 0 0 12px 4px #e9d8a6cc, 0 0 32px 8px #bfae8255; opacity: 0.85; }
+    50% { box-shadow: 0 0 24px 8px #fffbe6cc, 0 0 48px 16px #e9d8a6aa; opacity: 1; }
+}
 /* Chat Container */
 .chat-container {
     display: flex;

@@ -31,5 +31,7 @@ builder.Services.AddScoped<ConversationalNaturalnessEngine>(); // Turing test en
 builder.Services.AddScoped<ClientLLMService>();
 builder.Services.AddScoped<ClientSentimentService>();
 builder.Services.AddScoped<ClientChatManager>();
+builder.Services.AddScoped<OperatorPanelService>();
+builder.Services.AddScoped<OperatorPanelPreferencesService>();
 
 await builder.Build().RunAsync();
